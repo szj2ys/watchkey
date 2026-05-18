@@ -83,8 +83,16 @@ export async function POST(request: NextRequest) {
     )
   } catch (error: unknown) {
     console.error('Error in POST /api/analyze:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
+    // Provide more helpful error for configuration issues
+    if (errorMessage.includes('Invalid supabaseUrl')) {
+      return NextResponse.json(
+        { error: 'Service not configured. Please contact support.', requestId },
+        { status: 503 }
+      )
+    }
     return NextResponse.json(
-      { error: 'Internal server error', requestId },
+      { error: errorMessage, requestId },
       { status: 500 }
     )
   }
