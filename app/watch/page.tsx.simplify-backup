@@ -7,8 +7,8 @@ import { useParams, useRouter } from "next/navigation";
 export default function WatchPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const [analysisData, setAnalysisData] = useState<any>(null);
   const [videoData, setVideoData] = useState<any>(null);
+  const [analysisData, setAnalysisData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -93,30 +93,6 @@ export default function WatchPage() {
     );
   }
 
-  const formatDuration = (duration: number): string => {
-    const minutes = Math.floor(duration / 60);
-    const seconds = duration % 60;
-    return `${minutes}:${String(seconds).padStart(2, '0')}`;
-  };
-
-  const getStatusBadge = (status: string): { className: string; label: string } => {
-    switch (status) {
-      case 'completed':
-        return { className: 'bg-green-100 text-green-800', label: 'Completed' };
-      case 'pending':
-        return { className: 'bg-yellow-100 text-yellow-800', label: 'Pending' };
-      case 'processing':
-        return { className: 'bg-yellow-100 text-yellow-800', label: 'Processing' };
-      case 'failed':
-        return { className: 'bg-red-100 text-red-800', label: 'Failed' };
-      default:
-        return { 
-          className: 'bg-gray-100 text-gray-800', 
-          label: status.charAt(0).toUpperCase() + status.slice(1) 
-        };
-    }
-  };
-
   return (
     <div className="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans">
       <Header />
@@ -141,7 +117,7 @@ export default function WatchPage() {
               <h1 className="text-2xl font-bold mb-1">{videoData.title || 'Unknown Title'}</h1>
               <p className="text-sm text-slate-500 mb-6">
                 {videoData.channel || 'Unknown Channel'} • 
-                {formatDuration(videoData.duration || 0)} • 
+                {Math.floor((videoData.duration || 0) / 60)}:{String((videoData.duration || 0) % 60).padStart(2, '0')} • 
                 {new Date(videoData.created_at).toLocaleDateString()}
               </p>
               
@@ -168,9 +144,17 @@ export default function WatchPage() {
               <div className="flex items-center justify-between">
                 <span className="font-medium">Analysis Status:</span>
                 <span 
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(analysisData.status).className}`}
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    analysisData.status === 'completed' 
+                      ? 'bg-green-100 text-green-800' 
+                      : analysisData.status === 'pending' 
+                        ? 'bg-yellow-100 text-yellow-800' 
+                        : analysisData.status === 'failed' 
+                          ? 'bg-red-100 text-red-800' 
+                          : 'bg-gray-100 text-gray-800'
+                  }`}
                 >
-                  {getStatusBadge(analysisData.status).label}
+                  {analysisData.status.charAt(0).toUpperCase() + analysisData.status.slice(1)}
                 </span>
               </div>
               {analysisData.error && (
@@ -209,7 +193,7 @@ export default function WatchPage() {
                     </svg>
                   </button>
                 </div>
-                {typeof analysisData.transcript === 'string' && analysisData.transcript ? (
+                {analysisData.transcript ? (
                   <div className="space-y-2 text-sm h-[120px] overflow-y-auto pr-2">
                     {analysisData.transcript.split('\n').map((line: string, index: number) => (
                       <div key={index} className="flex gap-3">
@@ -242,7 +226,7 @@ export default function WatchPage() {
             <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
               <h2 className="text-xl font-bold mb-6">Chapters</h2>
               <div className="space-y-3">
-                {Array.isArray(analysisData.chapters) && analysisData.chapters.length > 0 ? (
+                {analysisData.chapters && Array.isArray(analysisData.chapters) && analysisData.chapters.length > 0 ? (
                   analysisData.chapters.map((chapter: string, index: number) => (
                     <div key={index} className={`group flex items-center gap-3 p-3 ${
                       index === 0 

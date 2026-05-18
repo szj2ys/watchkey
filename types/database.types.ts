@@ -37,6 +37,7 @@ export interface Database {
           thumbnail_url?: string
           created_at?: string
         }
+        Relationships: []
       }
       analyses: {
         Row: {
@@ -46,6 +47,7 @@ export interface Database {
           summary: string | null
           transcript: Json
           status: 'pending' | 'processing' | 'completed' | 'failed'
+          error: string | null
           created_at: string
         }
         Insert: {
@@ -55,6 +57,7 @@ export interface Database {
           summary?: string | null
           transcript?: Json
           status?: 'pending' | 'processing' | 'completed' | 'failed'
+          error?: string | null
           created_at?: string
         }
         Update: {
@@ -64,8 +67,18 @@ export interface Database {
           summary?: string | null
           transcript?: Json
           status?: 'pending' | 'processing' | 'completed' | 'failed'
+          error?: string | null
           created_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "analyses_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {

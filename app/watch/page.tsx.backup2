@@ -3,12 +3,17 @@
 import React, { useEffect, useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { useParams, useRouter } from "next/navigation";
+import type { Database } from "@/types/database.types";
+
+type Video = Database['public']['Tables']['videos']['Row'];
+type Analysis = Database['public']['Tables']['analyses']['Row'];
+type AnalysisWithVideo = Analysis & { videos: Video | null };
 
 export default function WatchPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const [analysisData, setAnalysisData] = useState<any>(null);
-  const [videoData, setVideoData] = useState<any>(null);
+  const [analysisData, setAnalysisData] = useState<AnalysisWithVideo | null>(null);
+  const [videoData, setVideoData] = useState<Video | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +33,7 @@ export default function WatchPage() {
         const analysisJson = await analysisResponse.json();
 
         // The analysis endpoint returns the analysis with embedded video
-        setAnalysisData(analysisJson);
+        setAnalysisData(analysisJson as AnalysisWithVideo);
         setVideoData(analysisJson.videos);
       } catch (err: any) {
         setError(err.message || "An unknown error occurred");
@@ -99,7 +104,7 @@ export default function WatchPage() {
     return `${minutes}:${String(seconds).padStart(2, '0')}`;
   };
 
-  const getStatusBadge = (status: string): { className: string; label: string } => {
+  const getStatusBadge = (status: Analysis['status']): { className: string; label: string } => {
     switch (status) {
       case 'completed':
         return { className: 'bg-green-100 text-green-800', label: 'Completed' };
@@ -209,7 +214,7 @@ export default function WatchPage() {
                     </svg>
                   </button>
                 </div>
-                {typeof analysisData.transcript === 'string' && analysisData.transcript ? (
+                {analysisData.transcript ? (
                   <div className="space-y-2 text-sm h-[120px] overflow-y-auto pr-2">
                     {analysisData.transcript.split('\n').map((line: string, index: number) => (
                       <div key={index} className="flex gap-3">
@@ -242,7 +247,7 @@ export default function WatchPage() {
             <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
               <h2 className="text-xl font-bold mb-6">Chapters</h2>
               <div className="space-y-3">
-                {Array.isArray(analysisData.chapters) && analysisData.chapters.length > 0 ? (
+                {analysisData.chapters && Array.isArray(analysisData.chapters) && analysisData.chapters.length > 0 ? (
                   analysisData.chapters.map((chapter: string, index: number) => (
                     <div key={index} className={`group flex items-center gap-3 p-3 ${
                       index === 0 

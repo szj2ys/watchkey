@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export function HeroForm() {
   const [url, setUrl] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const validateUrl = (urlToValidate: string) => {
     // Basic YouTube URL regex
@@ -13,7 +15,7 @@ export function HeroForm() {
     return regex.test(urlToValidate);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateUrl(url)) {
@@ -24,12 +26,30 @@ export function HeroForm() {
     setError('');
     setIsSubmitting(true);
     
-    // Simulate API call and redirect
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ youtubeUrl: url }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to analyze video');
+      }
+
+      const data = await response.json();
+      const { analysis_id } = data;
+
+      // Redirect to the watch page for this analysis
+      router.push(`/watch/${analysis_id}`);
+    } catch (err: any) {
+      setError(err.message || 'An unknown error occurred');
+    } finally {
       setIsSubmitting(false);
-      // In a real app this would call an API then redirect
-      // router.push('/analysis?url=' + encodeURIComponent(url));
-    }, 1500);
+    }
   };
 
   return (

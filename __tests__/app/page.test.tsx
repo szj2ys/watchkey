@@ -22,8 +22,8 @@ describe('Home Page', () => {
     // Logo text
     expect(screen.getByText('WatchKey')).toBeInTheDocument();
     
-    // Search input
-    const searchInput = screen.getByPlaceholderText('Search');
-    expect(searchInput).toBeInTheDocument();
+    // Search input (may appear in both desktop header and mobile drawer)
+    const searchInputs = screen.getAllByPlaceholderText('Search');
+    expect(searchInputs.length).toBeGreaterThanOrEqual(1);
   });
 });

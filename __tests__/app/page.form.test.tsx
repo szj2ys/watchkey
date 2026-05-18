@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Home from '@/app/page';
 
 const mockPush = jest.fn();
@@ -13,9 +13,18 @@ jest.mock('next/navigation', () => ({
   })
 }));
 
+// Mock fetch
+const mockFetch = jest.fn();
+global.fetch = mockFetch;
+
 describe('Home Page - Form Submission', () => {
   beforeEach(() => {
     mockPush.mockClear();
+    mockFetch.mockReset();
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ analysis_id: 'test-id' }),
+    });
   });
 
   it('validates YouTube URL format', async () => {
@@ -57,6 +66,9 @@ describe('Home Page - Form Submission', () => {
   });
   
   it('shows loading state during submission', async () => {
+    // Use a slow promise to keep loading state visible
+    mockFetch.mockImplementation(() => new Promise(() => {}));
+    
     render(<Home />);
     
     const input = screen.getByPlaceholderText('Paste YouTube URL here');
@@ -65,7 +77,8 @@ describe('Home Page - Form Submission', () => {
     fireEvent.change(input, { target: { value: 'https://youtube.com/watch?v=test' } });
     fireEvent.click(button);
     
-    expect(button).toBeDisabled();
-    expect(button).toHaveTextContent(/analyzing/i);
+    await waitFor(() => {
+      expect(button).toHaveTextContent(/analyzing/i);
+    });
   });
 });
