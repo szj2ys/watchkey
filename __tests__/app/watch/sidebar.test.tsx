@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import WatchPage from '@/app/watch/page';
+import WatchPage from '@/app/watch/[id]/page';
 
 // Mock next/navigation
 jest.mock('next/navigation', () => ({
