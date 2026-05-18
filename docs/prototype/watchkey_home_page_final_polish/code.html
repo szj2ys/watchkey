@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WatchKey - Understand any video in minutes</title>
+<!-- Tailwind CSS v3 CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Lucide Icons for UI elements -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<style data-purpose="typography">
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+<style data-purpose="custom-styling">
+    /* Custom button color to match the image precisely */
+    .bg-watchkey-blue {
+      background-color: #3b82f6;
+    }
+    .bg-watchkey-blue:hover {
+      background-color: #2563eb;
+    }
+    /* Input focus ring adjustment */
+    .search-input:focus {
+      outline: none;
+      border-color: #cbd5e1;
+      box-shadow: none;
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-900 min-h-screen flex flex-col">
+<!-- BEGIN: MainHeader -->
+<header class="flex items-center justify-between px-4 py-2 bg-white sticky top-0 z-50 h-14" data-purpose="main-navigation">
+<!-- Left side: Menu and Logo -->
+<div class="flex items-center gap-4">
+<button aria-label="Menu" class="p-2 hover:bg-gray-100 rounded-full">
+<i class="w-6 h-6" data-lucide="menu"></i>
+</button>
+<div class="flex items-center gap-1 cursor-pointer" data-purpose="logo-container">
+<img alt="YouTube Logo" class="h-6" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<span class="text-xl font-bold tracking-tight ml-1">WatchKey</span>
+</div>
+</div>
+<!-- Center side: Search Bar -->
+<div class="flex-1 max-w-2xl mx-8 flex items-center gap-4" data-purpose="search-container">
+<div class="flex w-full">
+<div class="relative w-full">
+<input class="w-full h-10 px-4 py-2 border border-gray-300 rounded-l-full focus:border-blue-500 focus:ring-0 search-input" placeholder="Search" type="text"/>
+</div>
+<button aria-label="Search" class="px-5 bg-gray-50 border border-l-0 border-gray-300 rounded-r-full hover:bg-gray-100 flex items-center justify-center">
+<i class="w-5 h-5 text-gray-600" data-lucide="search"></i>
+</button>
+</div>
+<button aria-label="Voice search" class="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
+<i class="w-5 h-5 text-gray-700" data-lucide="mic"></i>
+</button>
+</div>
+<!-- Right side: Actions and Profile -->
+<div class="flex items-center gap-2">
+<button aria-label="Create content" class="p-2 hover:bg-gray-100 rounded-full">
+<i class="w-6 h-6" data-lucide="video"></i>
+</button>
+<button aria-label="Notifications" class="p-2 hover:bg-gray-100 rounded-full relative">
+<i class="w-6 h-6" data-lucide="bell"></i>
+</button>
+<div class="ml-2 w-8 h-8 rounded-full overflow-hidden cursor-pointer" data-purpose="user-profile">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+</div>
+</div>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: HeroSection -->
+<main class="flex-grow flex flex-col items-center justify-center px-4 -mt-14" data-purpose="hero-content">
+<div class="text-center space-y-4 max-w-4xl">
+<!-- Headline -->
+<h1 class="text-[64px] tracking-tighter text-[#0f0f0f] leading-tight font-extrabold">
+        Understand any video in minutes
+      </h1>
+<!-- Subheadline -->
+<p class="text-[22px] text-[#0f0f0f] font-normal pt-2">
+        AI-generated chapters, summaries, and transcripts.
+      </p>
+<!-- Input Group -->
+<div class="mt-12 flex flex-col items-center space-y-3 w-full max-w-3xl mx-auto">
+<div class="flex flex-col md:flex-row w-full gap-4">
+<!-- URL Input Field -->
+<div class="relative flex-grow">
+<input class="w-full h-[56px] px-8 text-lg border border-gray-400 rounded-full focus:border-blue-500 focus:ring-0 shadow-sm" id="youtube-url-input" placeholder="Paste YouTube URL here" type="text"/>
+</div>
+<!-- Action Button -->
+<button class="h-[56px] px-10 bg-[#3b82f6] text-white text-[18px] font-semibold rounded-[28px] hover:bg-[#2563eb] transition-all duration-200" data-purpose="analyze-button">
+            Analyze
+          </button>
+</div>
+<!-- Hint Text -->
+<p class="text-sm text-gray-500 font-medium">
+          Analysis takes ~2 minutes
+        </p>
+</div>
+</div>
+</main>
+<!-- END: HeroSection -->
+<!-- BEGIN: Footer -->
+<footer class="py-8 border-t border-gray-100" data-purpose="site-footer">
+<div class="container mx-auto px-4">
+<nav class="flex justify-center items-center gap-8 text-sm font-medium text-gray-600">
+<a class="hover:text-gray-900 transition-colors" href="#">Privacy</a>
+<a class="hover:text-gray-900 transition-colors" href="#">Terms</a>
+</nav>
+</div>
+</footer>
+<!-- END: Footer -->
+<!-- BEGIN: Scripts -->
+<script data-purpose="icon-initialization">
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+<!-- END: Scripts -->
+</body></html>

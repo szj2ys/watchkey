@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WatchKey - Prototype</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .prototype-label {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #000;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 100;
+        }
+        .section-label {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .yt-button {
+            background: #f2f2f2;
+            border: none;
+            border-radius: 18px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .yt-button:hover { background: #e5e5e5; }
+        .yt-input {
+            border: 1px solid #e5e5e5;
+            border-radius: 24px;
+            padding: 12px 20px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .yt-input:focus {
+            border-color: #065fd4;
+            box-shadow: 0 0 0 3px rgba(6, 95, 212, 0.1);
+        }
+        .chapter-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .chapter-item:hover { background: #f2f2f2; }
+        .chapter-item.active {
+            background: #e6f2ff;
+            color: #065fd4;
+        }
+        .collapse-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .collapse-btn:hover { background: #f2f2f2; }
+        .video-card {
+            display: flex;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 10px;
+            transition: background 0.15s;
+        }
+        .video-card:hover { background: #f2f2f2; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="prototype-label">WatchKey Prototype v1.0</div>
+    
+    <div class="max-w-[1400px] mx-auto p-8 space-y-20">
+        
+        <!-- Page 1: Home -->
+        <section class="relative">
+            <div class="section-label">Page 1: Home</div>
+            <div class="bg-white min-h-[600px] flex flex-col">
+                <!-- Nav -->
+                <nav class="flex items-center justify-between px-6 py-4">
+                    <div class="flex items-center gap-4">
+                        <button class="p-2 hover:bg-gray-100 rounded-full">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                        </button>
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">W</span>
+                            </div>
+                            <span class="font-semibold text-lg tracking-tight">WatchKey</span>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+                </nav>
+                
+                <!-- Hero -->
+                <div class="flex-1 flex flex-col items-center justify-center px-6 py-20">
+                    <h1 class="text-5xl font-bold text-gray-900 mb-4 tracking-tight">Understand any video in minutes</h1>
+                    <p class="text-xl text-gray-500 mb-10">AI-generated chapters, summaries, and transcripts.</p>
+                    
+                    <div class="w-full max-w-xl">
+                        <div class="flex gap-3 mb-3">
+                            <input type="text" placeholder="youtube.com/watch?v=..." 
+                                class="yt-input flex-1">
+                            <button class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-medium text-lg transition">
+                                Analyze
+                            </button>
+                        </div>
+                        <p class="text-sm text-gray-500 text-center">Analysis takes about 2 minutes • 3 free today</p>
+                    </div>
+                </div>
+                
+                <!-- Features -->
+                <div class="px-6 pb-16">
+                    <div class="grid grid-cols-3 gap-8 max-w-4xl mx-auto">
+                        <div class="text-center">
+                            <div class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <div class="w-6 h-6 border-2 border-gray-600 rounded"></div>
+                            </div>
+                            <h3 class="font-semibold text-base mb-1">Smart Chapters</h3>
+                            <p class="text-sm text-gray-500">Auto-generated video sections</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <div class="w-6 h-6 border-2 border-gray-600 rounded-lg"></div>
+                            </div>
+                            <h3 class="font-semibold text-base mb-1">Key Summaries</h3>
+                            <p class="text-sm text-gray-500">Extract main points instantly</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <div class="w-6 h-6 border-2 border-gray-600 rounded-full"></div>
+                            </div>
+                            <h3 class="font-semibold text-base mb-1">Full Transcript</h3>
+                            <p class="text-sm text-gray-500">Click timestamps to navigate</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <div class="border-t border-gray-100 py-6 text-center text-sm text-gray-500">
+                    © WatchKey • Privacy • Terms
+                </div>
+            </div>
+        </section>
+        
+        <!-- Page 2: Watch -->
+        <section class="relative">
+            <div class="section-label">Page 2: Watch</div>
+            <div class="bg-white min-h-[700px]">
+                <!-- Top Nav -->
+                <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                    <div class="flex items-center gap-3">
+                        <button class="p-2 hover:bg-gray-100 rounded-full">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        </button>
+                        <span class="font-semibold">WatchKey</span>
+                    </div>
+                    <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="flex">
+                    <!-- Left: Video + Info -->
+                    <div class="flex-[7] p-4">
+                        <!-- Video Player -->
+                        <div class="aspect-video bg-gray-900 rounded-2xl mb-4 flex items-center justify-center">
+                            <div class="text-center text-white">
+                                <svg class="w-20 h-20 mx-auto mb-3 opacity-60" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <p class="text-sm opacity-70">YouTube Player</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Title & Meta -->
+                        <h1 class="text-2xl font-bold text-gray-900 mb-2 leading-tight">The Future of AI: A Deep Dive into Large Language Models</h1>
+                        <div class="flex items-center gap-3 text-sm text-gray-600 mb-4">
+                            <span class="font-medium text-gray-900">3Blue1Brown</span>
+                            <span>•</span>
+                            <span>2.3M views</span>
+                            <span>•</span>
+                            <span>Analyzed 2h ago</span>
+                        </div>
+                        
+                        <!-- Action Buttons (YouTube style) -->
+                        <div class="flex items-center gap-2 mb-5">
+                            <button class="yt-button flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                                Share
+                            </button>
+                            <button class="yt-button">Save</button>
+                        </div>
+                        
+                        <!-- Collapsible Sections -->
+                        <div class="space-y-2">
+                            <div class="collapse-btn">
+                                <span>Summary</span>
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                            <div class="collapse-btn">
+                                <span>Transcript</span>
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right: Chapters + Up Next -->
+                    <div class="flex-[3] border-l border-gray-100 p-4 bg-gray-50/50">
+                        <!-- Chapters -->
+                        <div class="mb-6">
+                            <h3 class="text-sm font-semibold text-gray-900 mb-3 px-1">Chapters</h3>
+                            <div class="space-y-1">
+                                <div class="chapter-item flex items-start gap-3">
+                                    <span class="text-xs text-gray-500 mt-0.5 min-w-[40px]">00:00</span>
+                                    <span class="text-sm">Introduction</span>
+                                </div>
+                                <div class="chapter-item active flex items-start gap-3">
+                                    <span class="text-xs font-medium mt-0.5 min-w-[40px]">08:15</span>
+                                    <span class="text-sm font-medium">What are LLMs?</span>
+                                </div>
+                                <div class="chapter-item flex items-start gap-3">
+                                    <span class="text-xs text-gray-500 mt-0.5 min-w-[40px]">18:30</span>
+                                    <span class="text-sm">Training Process</span>
+                                </div>
+                                <div class="chapter-item flex items-start gap-3">
+                                    <span class="text-xs text-gray-500 mt-0.5 min-w-[40px]">28:45</span>
+                                    <span class="text-sm">Emergent Abilities</span>
+                                </div>
+                                <div class="chapter-item flex items-start gap-3">
+                                    <span class="text-xs text-gray-500 mt-0.5 min-w-[40px]">38:20</span>
+                                    <span class="text-sm">Future Implications</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Divider -->
+                        <div class="border-t border-gray-200 my-4"></div>
+                        
+                        <!-- Up Next -->
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-900 mb-3 px-1">Up Next</h3>
+                            <div class="space-y-2">
+                                <div class="video-card">
+                                    <div class="w-24 h-14 bg-gray-200 rounded-lg flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium line-clamp-2 leading-snug">Introduction to Neural Networks</p>
+                                        <p class="text-xs text-gray-500 mt-0.5">3Blue1Brown • 4.2M views</p>
+                                    </div>
+                                </div>
+                                <div class="video-card">
+                                    <div class="w-24 h-14 bg-gray-200 rounded-lg flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium line-clamp-2 leading-snug">But what is a GPT?</p>
+                                        <p class="text-xs text-gray-500 mt-0.5">3Blue1Brown • 3.1M views</p>
+                                    </div>
+                                </div>
+                                <div class="video-card">
+                                    <div class="w-24 h-14 bg-gray-200 rounded-lg flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium line-clamp-2 leading-snug">Attention is All You Need</p>
+                                        <p class="text-xs text-gray-500 mt-0.5">Yannic Kilcher • 890K views</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+    </div>
+</body>
+</html>
