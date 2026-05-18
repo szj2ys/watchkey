@@ -4,13 +4,13 @@ Status: Done
 Implement the Watch page with video player, chapters, summary, and transcript.
 
 ## Tasks
-- [ ] Create video player component (YouTube embed or custom)
-- [ ] Implement video info section (title, channel, views)
-- [ ] Create Action buttons (Share, Save)
-- [ ] Implement AI Summary card with collapsible content
-- [ ] Create Transcript component with clickable timestamps
-- [ ] Implement Chapters sidebar
-- [ ] Create Up Next recommendations section
+- [x] Create video player component (YouTube embed or custom)
+- [x] Implement video info section (title, channel, views)
+- [x] Create Action buttons (Share, Save)
+- [x] Implement AI Summary card with collapsible content
+- [x] Create Transcript component with clickable timestamps
+- [x] Implement Chapters sidebar
+- [x] Create Up Next recommendations section
 
 ## Acceptance Criteria
 - Page matches prototype design (docs/prototype/watchkey_watch_page_final/)
