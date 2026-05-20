@@ -38,3 +38,16 @@ CREATE POLICY "Allow public read access to videos"
 CREATE POLICY "Allow public read access to analyses"
   ON analyses FOR SELECT
   USING (true);
+
+CREATE POLICY "Allow public insert to videos"
+  ON videos FOR INSERT
+  WITH CHECK (true);
+
+CREATE POLICY "Allow public insert to analyses"
+  ON analyses FOR INSERT
+  WITH CHECK (true);
+
+CREATE POLICY "Allow public update to analyses"
+  ON analyses FOR UPDATE
+  USING (true)
+  WITH CHECK (true);

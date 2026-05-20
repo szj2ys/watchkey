@@ -1,0 +1,31 @@
+--- a/app/watch/[id]/page.tsx
++++ b/app/watch/[id]/page.tsx
+@@ -139,14 +139,18 @@ export default function WatchPage() {
+           {/* Left Column: Video and Info */}
+           <div className="lg:col-span-8 space-y-6">
+             
+             {/* Video Player Section */}
+-            <section className="bg-black rounded-2xl overflow-hidden shadow-xl aspect-video relative group flex items-center justify-center">
+-              <div className="text-center text-white">
+-                <svg className="w-20 h-20 mx-auto mb-3 opacity-60" fill="currentColor" viewBox="0 0 24 24">
+-                  <path d="M8 5v14l11-7z" />
+-                </svg>
+-                <p className="text-sm opacity-70">YouTube Player</p>
+-              </div>
++            <section className="rounded-2xl overflow-hidden shadow-xl aspect-video">
++              {videoData.youtube_id ? (
++                <iframe
++                  src={`https://www.youtube.com/embed/${videoData.youtube_id}`}
++                  title={videoData.title || 'YouTube video'}
++                  className="w-full h-full"
++                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
++                  allowFullScreen
++                />
++              ) : (
++                <div className="w-full h-full bg-black flex items-center justify-center text-white">
++                  <p className="text-sm opacity-70">Video unavailable</p>
++                </div>
++              )}
+             </section>
+ 
+             {/* Video Metadata */}
