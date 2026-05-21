@@ -1,84 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { extractYouTubeId, isValidYouTubeUrl } from '@/lib/youtube/parser'
-import { getYouTubeVideoDetails, fetchYouTubeTranscript } from '@/lib/youtube/service'
-import { AIService } from '@/lib/ai/service'
+import { getYouTubeVideoDetails } from '@/lib/youtube/service'
+import { inngest } from '@/lib/inngest/client'
 import { randomUUID } from 'crypto'
-
-async function processAnalysisInline(
-  supabase: any,
-  analysisId: string,
-  videoId: string,
-  duration: number
-) {
-  try {
-    // Update status to processing
-    await supabase
-      .from('analyses')
-      .update({ status: 'processing' })
-      .eq('id', analysisId)
-
-    // Fetch real transcript from YouTube (returns array of {text, startTime})
-    const transcriptEntries = await fetchYouTubeTranscript(videoId)
-    
-    let chapters: string[] = []
-    let summary: string | null = null
-
-    // Try to use AI service for chapters and summary
-    try {
-      const aiService = new AIService()
-      const plainText = transcriptEntries.map(e => e.text).join(' ')
-      
-      // Generate chapters from transcript
-      const chapterData = await aiService.generateChapters(plainText, duration)
-      chapters = chapterData.map((ch: { startTime: number; title: string }) => {
-        const minutes = Math.floor(ch.startTime / 60)
-        const seconds = Math.floor(ch.startTime % 60)
-        return `${minutes}:${seconds.toString().padStart(2, '0')} ${ch.title}`
-      })
-      
-      // Generate summary from transcript
-      summary = await aiService.generateSummary(plainText)
-    } catch (aiError: any) {
-      console.warn(`[analyze] AI service failed for analysis ${analysisId}:`, aiError.message)
-      // AI failed, but we still have the real transcript - that's fine
-    }
-
-    // Use transcript entries directly (already have startTime)
-    const enhancedTranscript = transcriptEntries.map(entry => ({
-      text: entry.text,
-      startTime: entry.startTime,
-      confidence: 0.95
-    }))
-
-    // Update analysis with results
-    const { error: updateError } = await supabase
-      .from('analyses')
-      .update({
-        status: 'completed',
-        chapters: chapters,
-        summary: summary,
-        transcript: enhancedTranscript,
-      })
-      .eq('id', analysisId)
-
-    if (updateError) {
-      throw updateError
-    }
-
-    console.log(`[analyze] Inline processing completed for analysis ${analysisId}`)
-  } catch (error: any) {
-    console.error(`[analyze] Error processing analysis ${analysisId}:`, error)
-    
-    await supabase
-      .from('analyses')
-      .update({
-        status: 'failed',
-        error: error.message || 'Unknown error during inline processing',
-      })
-      .eq('id', analysisId)
-  }
-}
 
 export async function POST(request: NextRequest) {
   const requestId = randomUUID()
@@ -153,10 +78,15 @@ export async function POST(request: NextRequest) {
     if (analysisError) throw analysisError
     if (!analysisData) throw new Error('Failed to create analysis record')
 
-    // Process analysis inline with real data (non-blocking)
-    // Fire and forget - client will poll for status
-    processAnalysisInline(supabase, analysisData.id, videoId, video_duration)
-      .catch(err => console.error('[analyze] Inline processing failed:', err))
+    // Send Inngest event for async processing
+    await inngest.send({
+      name: 'analysis.requested',
+      data: {
+        analysisId: analysisData.id,
+        videoId,
+        duration: video_duration,
+      },
+    })
 
     return NextResponse.json(
       { analysis_id: analysisData.id, requestId },
