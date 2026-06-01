@@ -4,15 +4,13 @@ import { createClient } from '@/lib/supabase/server'
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+): Promise<NextResponse> {
   const requestId = (await params).id
 
   try {
     const analysisId = requestId
-
     const supabase = await createClient()
 
-    // Fetch analysis with video details
     const { data: analysis, error } = await supabase
       .from('analyses')
       .select(`
@@ -45,7 +43,6 @@ export async function GET(
       throw error
     }
 
-    // Guard against null analysis (should not happen if no error)
     if (!analysis) {
       return NextResponse.json(
         { error: 'Analysis not found', requestId: analysisId },
@@ -53,13 +50,13 @@ export async function GET(
       )
     }
 
-    // Use Object.assign to avoid spread type issues
     const response = Object.assign({}, analysis, { requestId: analysisId })
     return NextResponse.json(response, { status: 200 })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Internal server error';
     console.error('Error in GET /api/analyses/[id]:', error)
     return NextResponse.json(
-      { error: 'Internal server error', requestId },
+      { error: message, requestId },
       { status: 500 }
     )
   }

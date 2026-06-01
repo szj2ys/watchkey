@@ -1,29 +1,38 @@
 import { render, screen } from '@testing-library/react';
-import Home from '@/app/page';
+import { HeroSection } from '@/components/home/HeroSection';
 
-// Mock useRouter
+// Mock next/navigation
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: jest.fn(),
     replace: jest.fn(),
     prefetch: jest.fn(),
     back: jest.fn(),
-  })
+  }),
 }));
 
-describe('Home Page - URL Input', () => {
+// Mock Supabase client
+jest.mock('@/lib/supabase/client', () => ({
+  createClient: () => ({
+    auth: {
+      signInWithOAuth: jest.fn(),
+    },
+  }),
+}));
+
+describe('HeroSection - URL Input', () => {
   it('renders URL input with correct placeholder and validation', () => {
-    render(<Home />);
-    
+    render(<HeroSection loggedIn={false} />);
+
     // Input element
     const input = screen.getByPlaceholderText('Paste YouTube URL here');
     expect(input).toBeInTheDocument();
-    
+
     // Button element
     const analyzeButton = screen.getByRole('button', { name: /analyze/i });
     expect(analyzeButton).toBeInTheDocument();
-    
+
     // Hint text
-    expect(screen.getByText('Analysis takes ~2 minutes')).toBeInTheDocument();
+    expect(screen.getByText(/Analysis takes ~2 minutes/)).toBeInTheDocument();
   });
 });

@@ -46,6 +46,7 @@ beforeEach(() => {
 describe('Watch Page - Video Player', () => {
   it('renders the video player section', async () => {
     render(<WatchPage />);
-    expect(await screen.findByText('Understanding AI Video Analysis: A Deep Dive')).toBeInTheDocument();
+    const titles = await screen.findAllByText('Understanding AI Video Analysis: A Deep Dive');
+    expect(titles.length).toBeGreaterThanOrEqual(1);
   });
 });

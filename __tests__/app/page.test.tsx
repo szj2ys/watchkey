@@ -1,29 +1,37 @@
 import { render, screen } from '@testing-library/react';
-import Home from '@/app/page';
+import { Header } from '@/components/layout/Header';
 
-// Mock useRouter
+// Mock next/navigation
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: jest.fn(),
     replace: jest.fn(),
     prefetch: jest.fn(),
     back: jest.fn(),
-  })
+  }),
 }));
 
-describe('Home Page', () => {
+// Mock Supabase client
+jest.mock('@/lib/supabase/client', () => ({
+  createClient: () => ({
+    auth: {
+      getSession: jest.fn().mockResolvedValue({ data: { session: null } }),
+      onAuthStateChange: jest.fn().mockReturnValue({ data: { subscription: { unsubscribe: jest.fn() } } }),
+      signInWithOAuth: jest.fn(),
+      signOut: jest.fn(),
+    },
+  }),
+}));
+
+describe('Header', () => {
   it('renders the header with WatchKey logo and search input', () => {
-    render(<Home />);
-    
-    // Using test ID to verify the main navigation header exists
-    const header = screen.getByTestId('main-navigation');
-    expect(header).toBeInTheDocument();
-    
+    render(<Header />);
+
     // Logo text
     expect(screen.getByText('WatchKey')).toBeInTheDocument();
-    
-    // Search input (may appear in both desktop header and mobile drawer)
-    const searchInputs = screen.getAllByPlaceholderText('Search');
+
+    // Search input (desktop)
+    const searchInputs = screen.getAllByPlaceholderText(/search/i);
     expect(searchInputs.length).toBeGreaterThanOrEqual(1);
   });
 });

@@ -46,8 +46,10 @@ beforeEach(() => {
 describe('Watch Page - Video Info', () => {
   it('renders video title and metadata', async () => {
     render(<WatchPage />);
-    expect(await screen.findByText('Understanding AI Video Analysis: A Deep Dive')).toBeInTheDocument();
-    // "WatchKey Official" appears in multiple places (channel + Up Next)
+    // Title appears in both header and h1
+    const titles = await screen.findAllByText('Understanding AI Video Analysis: A Deep Dive');
+    expect(titles.length).toBeGreaterThanOrEqual(1);
+    // "WatchKey Official" appears in header
     const channelElements = screen.getAllByText('WatchKey Official');
     expect(channelElements.length).toBeGreaterThanOrEqual(1);
   });

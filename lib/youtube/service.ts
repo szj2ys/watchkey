@@ -1,10 +1,10 @@
-import { extractYouTubeId } from './parser';
+import { setupProxy } from '@/lib/proxy';
 
 export interface YouTubeVideoDetails {
   youtubeId: string;
   title: string;
   channel: string;
-  duration: number; // in seconds
+  duration: number;
   thumbnailUrl: string;
 }
 
@@ -13,10 +13,20 @@ interface TranscriptEntry {
   startTime: number;
 }
 
-/**
- * Fetch YouTube video metadata using YouTube Data API v3.
- * Falls back to basic metadata extraction if API key is not available.
- */
+interface YouTubeVideoResponse {
+  snippet: {
+    title: string;
+    channelTitle: string;
+    thumbnails: { high: { url: string } };
+  };
+  contentDetails: { duration: string };
+}
+
+interface YouTubeTranscriptItem {
+  text: string;
+  offset: number;
+}
+
 export async function getYouTubeVideoDetails(
   videoId: string
 ): Promise<YouTubeVideoDetails> {
@@ -24,6 +34,7 @@ export async function getYouTubeVideoDetails(
 
   if (apiKey) {
     try {
+      await setupProxy();
       const response = await fetch(
         `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${apiKey}`
       );
@@ -38,7 +49,7 @@ export async function getYouTubeVideoDetails(
         throw new Error('Video not found');
       }
 
-      const item = data.items[0];
+      const item: YouTubeVideoResponse = data.items[0];
       const snippet = item.snippet;
       const contentDetails = item.contentDetails;
 
@@ -60,9 +71,9 @@ export async function getYouTubeVideoDetails(
   }
 }
 
-async function getBasicYouTubeMetadata(
+function getBasicYouTubeMetadata(
   videoId: string
-): Promise<YouTubeVideoDetails> {
+): YouTubeVideoDetails {
   return {
     youtubeId: videoId,
     title: `YouTube Video ${videoId}`,
@@ -81,31 +92,16 @@ function parseISO8601Duration(duration: string): number {
   return hours * 3600 + minutes * 60 + seconds;
 }
 
-/**
- * Fetch transcript for a YouTube video.
- * Uses youtube-transcript package with proxy support via undici.
- * Returns structured entries with timestamps.
- */
 export async function fetchYouTubeTranscript(
   videoId: string
 ): Promise<TranscriptEntry[]> {
-  const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY || process.env.https_proxy || process.env.http_proxy;
-
-  // Set up proxy for fetch if needed
-  if (proxyUrl) {
-    try {
-      const { ProxyAgent, setGlobalDispatcher } = await import('undici');
-      setGlobalDispatcher(new ProxyAgent(proxyUrl));
-    } catch (e) {
-      console.warn('[youtube] Failed to set up proxy:', e);
-    }
-  }
+  await setupProxy();
 
   try {
     const { YoutubeTranscript } = await import('youtube-transcript');
-    const raw = await YoutubeTranscript.fetchTranscript(videoId);
+    const raw: YouTubeTranscriptItem[] = await YoutubeTranscript.fetchTranscript(videoId);
 
-    const entries: TranscriptEntry[] = raw.map((item: any) => ({
+    const entries: TranscriptEntry[] = raw.map((item: YouTubeTranscriptItem) => ({
       text: item.text.replace(/\n/g, ' ').trim(),
       startTime: Math.round((item.offset || 0) / 1000),
     }));

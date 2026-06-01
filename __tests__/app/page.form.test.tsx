@@ -1,23 +1,32 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Home from '@/app/page';
+import { HeroSection } from '@/components/home/HeroSection';
 
 const mockPush = jest.fn();
 
-// Mock useRouter
+// Mock next/navigation
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: mockPush,
     replace: jest.fn(),
     prefetch: jest.fn(),
     back: jest.fn(),
-  })
+  }),
+}));
+
+// Mock Supabase client
+jest.mock('@/lib/supabase/client', () => ({
+  createClient: () => ({
+    auth: {
+      signInWithOAuth: jest.fn(),
+    },
+  }),
 }));
 
 // Mock fetch
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
-describe('Home Page - Form Submission', () => {
+describe('HeroSection - Form Submission', () => {
   beforeEach(() => {
     mockPush.mockClear();
     mockFetch.mockReset();
@@ -28,55 +37,55 @@ describe('Home Page - Form Submission', () => {
   });
 
   it('validates YouTube URL format', async () => {
-    render(<Home />);
-    
+    render(<HeroSection loggedIn={false} />);
+
     const input = screen.getByPlaceholderText('Paste YouTube URL here');
     const button = screen.getByRole('button', { name: /analyze/i });
-    
+
     // Invalid URL
     fireEvent.change(input, { target: { value: 'not-a-url' } });
     fireEvent.click(button);
-    
+
     expect(await screen.findByText('Please enter a valid YouTube URL')).toBeInTheDocument();
     expect(mockPush).not.toHaveBeenCalled();
-    
+
     // Valid URL
     fireEvent.change(input, { target: { value: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' } });
     fireEvent.click(button);
-    
+
     expect(screen.queryByText('Please enter a valid YouTube URL')).not.toBeInTheDocument();
   });
-  
+
   it('disables button when input is empty', () => {
-    render(<Home />);
-    
+    render(<HeroSection loggedIn={false} />);
+
     const input = screen.getByPlaceholderText('Paste YouTube URL here');
     const button = screen.getByRole('button', { name: /analyze/i });
-    
-    // Initially disabled
+
+    // Initially disabled (empty input)
     expect(button).toBeDisabled();
-    
+
     // Enabled after typing
     fireEvent.change(input, { target: { value: 'test' } });
     expect(button).not.toBeDisabled();
-    
+
     // Disabled again if cleared
     fireEvent.change(input, { target: { value: '' } });
     expect(button).toBeDisabled();
   });
-  
+
   it('shows loading state during submission', async () => {
     // Use a slow promise to keep loading state visible
     mockFetch.mockImplementation(() => new Promise(() => {}));
-    
-    render(<Home />);
-    
+
+    render(<HeroSection loggedIn={false} />);
+
     const input = screen.getByPlaceholderText('Paste YouTube URL here');
     const button = screen.getByRole('button', { name: /analyze/i });
-    
+
     fireEvent.change(input, { target: { value: 'https://youtube.com/watch?v=test' } });
     fireEvent.click(button);
-    
+
     await waitFor(() => {
       expect(button).toHaveTextContent(/analyzing/i);
     });

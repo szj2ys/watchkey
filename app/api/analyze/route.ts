@@ -1,54 +1,127 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { extractYouTubeId, isValidYouTubeUrl } from '@/lib/youtube/parser'
-import { getYouTubeVideoDetails } from '@/lib/youtube/service'
-import { inngest } from '@/lib/inngest/client'
+import { getYouTubeVideoDetails, fetchYouTubeTranscript } from '@/lib/youtube/service'
+import { AIService } from '@/lib/ai/service'
 import { randomUUID } from 'crypto'
+import type { Chapter } from '@/lib/ai/provider'
 
-export async function POST(request: NextRequest) {
+interface TranscriptEntry {
+  text: string;
+  startTime: number;
+  endTime?: number;
+  confidence?: number;
+}
+
+interface ExistingAnalysis {
+  id: string;
+  status: string;
+}
+
+interface ExistingVideo {
+  id: string;
+  duration: number;
+  analyses?: ExistingAnalysis[];
+}
+
+async function processAnalysisInBackground(analysisId: string, videoId: string, duration: number): Promise<void> {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!supabaseUrl || !supabaseAnonKey) return
+
+  const { createClient: createSupabase } = await import('@supabase/supabase-js')
+  const supabase = createSupabase(supabaseUrl, supabaseAnonKey)
+
+  try {
+    await supabase.from('analyses').update({ status: 'processing' }).eq('id', analysisId)
+
+    const transcriptEntries = await fetchYouTubeTranscript(videoId)
+    const plainText = transcriptEntries.map((e) => e.text).join(' ')
+
+    let chapters: Chapter[] = []
+    let summary: string | null = null
+
+    if (plainText.length > 50) {
+      const aiService = new AIService()
+      try {
+        const chapterData = await aiService.generateChapters(plainText, duration)
+        chapters = chapterData.map((ch) => ({
+          startTime: Number(ch.startTime) || 0,
+          endTime: Number(ch.endTime) || duration,
+          title: String(ch.title || ''),
+          summary: String(ch.summary || ''),
+        }))
+      } catch (e) { console.warn('[bg] chapters failed', e) }
+
+      try {
+        summary = await aiService.generateSummary(plainText)
+      } catch (e) { console.warn('[bg] summary failed', e) }
+    }
+
+    const enhancedTranscript: TranscriptEntry[] = transcriptEntries.map((e) => ({
+      text: e.text,
+      startTime: e.startTime || 0,
+      endTime: (e.startTime || 0) + 5,
+      confidence: 0.95,
+    }))
+
+    await supabase.from('analyses').update({
+      status: 'completed',
+      chapters,
+      summary,
+      transcript: enhancedTranscript,
+    }).eq('id', analysisId)
+
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[bg] analysis failed:', error)
+    await supabase.from('analyses').update({ status: 'failed', error: message }).eq('id', analysisId)
+  }
+}
+
+export async function POST(request: NextRequest): Promise<NextResponse> {
   const requestId = randomUUID()
 
   try {
     const { youtubeUrl } = await request.json()
 
-    // Validate YouTube URL
     if (!youtubeUrl || !isValidYouTubeUrl(youtubeUrl)) {
-      return NextResponse.json(
-        { error: 'Invalid YouTube URL', requestId },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid YouTube URL', requestId }, { status: 400 })
     }
 
     const videoId = extractYouTubeId(youtubeUrl)
     if (!videoId) {
-      return NextResponse.json(
-        { error: 'Could not extract video ID from URL', requestId },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Could not extract video ID', requestId }, { status: 400 })
     }
 
     const supabase = await createClient()
 
-    // Check if video already exists
     const { data: existingVideo } = await supabase
       .from('videos')
-      .select('id, duration')
+      .select('id, duration, analyses(id, status)')
       .eq('youtube_id', videoId)
       .single()
 
     let video_uuid: string
-    let video_duration: number = 300 // default 5 minutes
+    let video_duration = 300
 
     if (existingVideo) {
-      video_uuid = existingVideo.id
-      video_duration = existingVideo.duration || 300
+      const video = existingVideo as unknown as ExistingVideo;
+      video_uuid = video.id
+      video_duration = video.duration || 300
+      const completedAnalysis = video.analyses?.find((a) => a.status === 'completed')
+      if (completedAnalysis) {
+        return NextResponse.json({ analysis_id: completedAnalysis.id, status: 'completed', requestId }, { status: 200 })
+      }
+      const existingAnalysis = video.analyses?.[0]
+      if (existingAnalysis) {
+        return NextResponse.json({ analysis_id: existingAnalysis.id, status: existingAnalysis.status, requestId }, { status: 200 })
+      }
     } else {
-      // Fetch video details from YouTube
       const videoDetails = await getYouTubeVideoDetails(videoId)
       video_duration = videoDetails.duration || 300
 
-      // Insert new video
-      const { data: videoData, error: insertVideoError } = await supabase
+      const { data: videoData, error: insertError } = await supabase
         .from('videos')
         .insert({
           youtube_id: videoId,
@@ -60,59 +133,29 @@ export async function POST(request: NextRequest) {
         .select('id')
         .single()
 
-      if (insertVideoError) throw insertVideoError
+      if (insertError) throw insertError
       if (!videoData) throw new Error('Failed to create video record')
       video_uuid = videoData.id
     }
 
-    // Create analysis record
     const { data: analysisData, error: analysisError } = await supabase
       .from('analyses')
-      .insert({
-        video_id: video_uuid,
-        status: 'pending',
-      })
+      .insert({ video_id: video_uuid, status: 'pending' })
       .select('id')
       .single()
 
     if (analysisError) throw analysisError
     if (!analysisData) throw new Error('Failed to create analysis record')
 
-    // Send Inngest event for async processing
-    await inngest.send({
-      name: 'analysis.requested',
-      data: {
-        analysisId: analysisData.id,
-        videoId,
-        duration: video_duration,
-      },
-    })
+    const analysisId = analysisData.id
 
-    return NextResponse.json(
-      { analysis_id: analysisData.id, requestId },
-      { status: 201 }
-    )
+    processAnalysisInBackground(analysisId, videoId, video_duration).catch(console.error)
+
+    return NextResponse.json({ analysis_id: analysisId, status: 'pending', requestId }, { status: 201 })
+
   } catch (error: unknown) {
-    console.error('Error in POST /api/analyze:', error)
-    const errorMessage = error instanceof Error
-      ? error.message
-      : (error && typeof error === 'object' && 'message' in error)
-        ? String((error as any).message)
-        : JSON.stringify(error)
-    // Provide more helpful error for configuration issues
-    if (
-      errorMessage.includes('Missing Supabase environment variables') ||
-      errorMessage.includes('placeholder values') ||
-      errorMessage.includes('Invalid supabaseUrl')
-    ) {
-      return NextResponse.json(
-        { error: 'Service not configured. Please set up your Supabase credentials in .env.local', requestId },
-        { status: 503 }
-      )
-    }
-    return NextResponse.json(
-      { error: errorMessage, requestId },
-      { status: 500 }
-    )
+    console.error('[analyze]', error)
+    const msg = error instanceof Error ? error.message : JSON.stringify(error)
+    return NextResponse.json({ error: msg, requestId }, { status: 500 })
   }
 }

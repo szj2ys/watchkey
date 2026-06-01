@@ -46,7 +46,7 @@ beforeEach(() => {
 describe('Watch Page - Insights', () => {
   it('renders AI Summary and Transcript sections', async () => {
     render(<WatchPage />);
-    expect(await screen.findByText('Understanding AI Video Analysis: A Deep Dive')).toBeInTheDocument();
+    await screen.findAllByText('Understanding AI Video Analysis: A Deep Dive');
     expect(screen.getByText('AI Summary')).toBeInTheDocument();
     expect(screen.getByText('Transcript')).toBeInTheDocument();
   });

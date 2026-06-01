@@ -46,6 +46,8 @@ beforeEach(() => {
 describe('Watch Page', () => {
   it('renders correctly', async () => {
     render(<WatchPage />);
-    expect(await screen.findByText('Understanding AI Video Analysis: A Deep Dive')).toBeInTheDocument();
+    // Title appears in both header and h1
+    const titles = await screen.findAllByText('Understanding AI Video Analysis: A Deep Dive');
+    expect(titles.length).toBeGreaterThanOrEqual(1);
   });
 });
