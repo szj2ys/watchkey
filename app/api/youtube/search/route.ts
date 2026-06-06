@@ -38,7 +38,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const searchRes = await fetch(
       `${YOUTUBE_SEARCH_API}?part=snippet&q=${encodeURIComponent(q)}&type=video&maxResults=20&key=${apiKey}`
     );
-    if (!searchRes.ok) throw new Error(`YouTube search failed: ${searchRes.status}`);
+    
+    if (!searchRes.ok) {
+      throw new Error(`YouTube search failed: ${searchRes.status}`);
+    }
+    
     const searchData = await searchRes.json();
 
     const videoIds: string[] = (searchData.items as YouTubeSearchItem[] || [])
@@ -52,7 +56,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const detailsRes = await fetch(
       `${YOUTUBE_VIDEOS_API}?part=contentDetails,statistics&id=${videoIds.join(',')}&key=${apiKey}`
     );
-    if (!detailsRes.ok) throw new Error(`YouTube details failed: ${detailsRes.status}`);
+    
+    if (!detailsRes.ok) {
+      throw new Error(`YouTube details failed: ${detailsRes.status}`);
+    }
+    
     const detailsData = await detailsRes.json();
 
     const detailsMap = new Map<string, YouTubeVideoDetail>(

@@ -35,18 +35,29 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const searchRes = await fetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=${videoId}&type=video&maxResults=10&key=${apiKey}`
     );
-    if (!searchRes.ok) throw new Error(`Related search failed: ${searchRes.status}`);
+    
+    if (!searchRes.ok) {
+      throw new Error(`Related search failed: ${searchRes.status}`);
+    }
+    
     const searchData = await searchRes.json();
 
     const videoIds: string[] = (searchData.items as YouTubeSearchItem[] || [])
       .map((i) => i.id?.videoId)
       .filter((id): id is string => Boolean(id));
-    if (videoIds.length === 0) return NextResponse.json({ items: [] });
+      
+    if (videoIds.length === 0) {
+      return NextResponse.json({ items: [] });
+    }
 
     const vidsRes = await fetch(
       `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics,snippet&id=${videoIds.join(',')}&key=${apiKey}`
     );
-    if (!vidsRes.ok) throw new Error(`Videos detail failed: ${vidsRes.status}`);
+    
+    if (!vidsRes.ok) {
+      throw new Error(`Videos detail failed: ${vidsRes.status}`);
+    }
+    
     const vidsData = await vidsRes.json();
 
     const items: VideoItem[] = (vidsData.items as YouTubeVideoResponse[] || []).map((item) => ({

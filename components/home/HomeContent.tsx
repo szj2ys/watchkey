@@ -14,7 +14,12 @@ interface YouTubeData {
   videos: VideoItem[];
 }
 
-function SearchResults({ query, onClear }: { query: string; onClear: () => void }) {
+interface SearchResultsProps {
+  query: string;
+  onClear: () => void;
+}
+
+function SearchResults({ query, onClear }: SearchResultsProps) {
   const [results, setResults] = useState<VideoItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -79,7 +84,11 @@ function SearchResults({ query, onClear }: { query: string; onClear: () => void 
   );
 }
 
-function TrendingVideos({ videos }: { videos: VideoItem[] }) {
+interface TrendingVideosProps {
+  videos: VideoItem[];
+}
+
+function TrendingVideos({ videos }: TrendingVideosProps) {
   if (videos.length === 0) return null;
 
   return (
@@ -92,15 +101,17 @@ function TrendingVideos({ videos }: { videos: VideoItem[] }) {
   );
 }
 
+interface InnerHomeContentProps {
+  loggedIn: boolean;
+  data: YouTubeData | null;
+  trending: VideoItem[];
+}
+
 function InnerHomeContent({
   loggedIn,
   data,
   trending,
-}: {
-  loggedIn: boolean;
-  data: YouTubeData | null;
-  trending: VideoItem[];
-}) {
+}: InnerHomeContentProps) {
   const searchParams = useSearchParams();
   const q = searchParams.get('q') || '';
   const [searchQuery, setSearchQuery] = useState(q);
@@ -126,15 +137,17 @@ function InnerHomeContent({
   );
 }
 
+interface HomeContentProps {
+  loggedIn: boolean;
+  data: YouTubeData | null;
+  trending: VideoItem[];
+}
+
 export function HomeContent({
   loggedIn,
   data,
   trending,
-}: {
-  loggedIn: boolean;
-  data: YouTubeData | null;
-  trending: VideoItem[];
-}) {
+}: HomeContentProps) {
   return (
     <Suspense fallback={<YouTubeFeedSkeleton />}>
       <InnerHomeContent loggedIn={loggedIn} data={data} trending={trending} />
