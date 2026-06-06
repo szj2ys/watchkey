@@ -35,7 +35,7 @@ async function processAnalysisInBackground(analysisId: string, videoId: string, 
   try {
     await supabase.from('analyses').update({ status: 'processing' }).eq('id', analysisId)
 
-    const transcriptEntries = await fetchYouTubeTranscript(videoId)
+    const transcriptEntries = await fetchYouTubeTranscript(videoId) || []
     const plainText = transcriptEntries.map((e) => e.text).join(' ')
 
     let chapters: Chapter[] = []
@@ -43,19 +43,15 @@ async function processAnalysisInBackground(analysisId: string, videoId: string, 
 
     if (plainText.length > 50) {
       const aiService = new AIService()
-      try {
-        const chapterData = await aiService.generateChapters(plainText, duration)
-        chapters = chapterData.map((ch) => ({
-          startTime: Number(ch.startTime) || 0,
-          endTime: Number(ch.endTime) || duration,
-          title: String(ch.title || ''),
-          summary: String(ch.summary || ''),
-        }))
-      } catch (e) { console.warn('[bg] chapters failed', e) }
+      const chapterData = await aiService.generateChapters(plainText, duration)
+      chapters = chapterData.map((ch) => ({
+        startTime: Number(ch.startTime) || 0,
+        endTime: Number(ch.endTime) || duration,
+        title: String(ch.title || ''),
+        summary: String(ch.summary || ''),
+      }))
 
-      try {
-        summary = await aiService.generateSummary(plainText)
-      } catch (e) { console.warn('[bg] summary failed', e) }
+      summary = await aiService.generateSummary(plainText)
     }
 
     const enhancedTranscript: TranscriptEntry[] = transcriptEntries.map((e) => ({

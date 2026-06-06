@@ -23,8 +23,7 @@ export function SearchPanel({ onAnalyze }: Props) {
       const res = await fetch(`/api/youtube/search?q=${encodeURIComponent(searchQuery.trim())}`);
       const data = await res.json();
       setSearchResults(data.items || []);
-    } catch { setSearchResults([]); }
-    finally { setSearchLoading(false); }
+    } finally { setSearchLoading(false); }
   };
 
   return (

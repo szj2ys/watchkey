@@ -69,7 +69,7 @@ describe('POST /api/analyze', () => {
   });
 
   it('should use real transcript from fetchYouTubeTranscript instead of mock data', async () => {
-    const realTranscript = 'This is a real transcript from YouTube. It has multiple sentences.';
+    const realTranscript = [{ startTime: 0, text: 'This is a real transcript from YouTube. It has multiple sentences.' }];
     (fetchYouTubeTranscript as jest.Mock).mockResolvedValue(realTranscript);
 
     const mockAIService = {
@@ -105,7 +105,7 @@ describe('POST /api/analyze', () => {
   });
 
   it('should store transcript even when AI service fails', async () => {
-    const realTranscript = 'Real transcript even when AI fails.';
+    const realTranscript = [{ startTime: 0, text: 'Real transcript even when AI fails.' }];
     (fetchYouTubeTranscript as jest.Mock).mockResolvedValue(realTranscript);
 
     const mockAIService = {

@@ -34,8 +34,9 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
       const data = await res.json();
       setSubmitSuccess(true);
       setTimeout(() => router.push(`/watch/${data.analysis_id}`), 400);
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Something went wrong';
+      setError(msg);
     } finally {
       setIsSubmitting(false);
     }
