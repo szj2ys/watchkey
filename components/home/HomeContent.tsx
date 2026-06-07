@@ -25,14 +25,16 @@ function SearchResults({ query, onClear }: SearchResultsProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
     if (!query) return;
     setLoading(true);
     setError(null);
     fetch(`/api/youtube/search?q=${encodeURIComponent(query)}`)
       .then(r => r.ok ? r.json() : Promise.reject(new Error('Search failed')))
-      .then(data => setResults(data.items || []))
-      .catch(e => setError(e.message))
-      .finally(() => setLoading(false));
+      .then(data => { if(isMounted) setResults(data.items || []); })
+      .catch(e => { if(isMounted) setError(e.message); })
+      .finally(() => { if(isMounted) setLoading(false); });
+    return () => { isMounted = false; };
   }, [query]);
 
   if (loading) {
@@ -77,7 +79,7 @@ function SearchResults({ query, onClear }: SearchResultsProps) {
         </div>
       ) : !error ? (
         <div className="text-center py-16">
-          <p className="text-gray-400">No results found for "{query}"</p>
+          <p className="text-gray-400">No results found for &quot;{query}&quot;</p>
         </div>
       ) : null}
     </section>
@@ -114,12 +116,13 @@ function InnerHomeContent({
 }: InnerHomeContentProps) {
   const searchParams = useSearchParams();
   const q = searchParams.get('q') || '';
-  const [searchQuery, setSearchQuery] = useState(q);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  // Sync state when URL param changes
+  const currentQuery = searchQuery || q;
 
-  useEffect(() => setSearchQuery(q), [q]);
-
-  if (searchQuery) {
-    return <SearchResults query={searchQuery} onClear={() => setSearchQuery('')} />;
+  if (currentQuery) {
+    return <SearchResults query={currentQuery} onClear={() => setSearchQuery('')} />;
   }
 
   return (

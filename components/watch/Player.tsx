@@ -17,8 +17,6 @@ export function Player({ videoId, onTimeUpdate, onPlayerReady }: PlayerProps) {
   const onTimeUpdateRef = useRef(onTimeUpdate);
   const onPlayerReadyRef = useRef(onPlayerReady);
 
-  onTimeUpdateRef.current = onTimeUpdate;
-  onPlayerReadyRef.current = onPlayerReady;
 
   useEffect(() => {
     if (!videoId || !containerRef.current) return;

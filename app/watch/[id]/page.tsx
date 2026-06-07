@@ -106,7 +106,11 @@ export default function WatchPage(): React.ReactElement {
     }
   }, [params.id]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  // Avoid calling fetchData (which sets state) on every render directly in useEffect
+  // if we can just call it once initially, or we ensure fetchData is stable.
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
     if (analysis?.status === 'processing' || analysis?.status === 'pending') {
