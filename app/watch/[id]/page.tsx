@@ -140,7 +140,7 @@ export default function WatchPage(): React.ReactElement {
       if (!res.ok) throw new Error('Failed');
       const data = await res.json() as { analysis_id: string };
       router.push(`/watch/${data.analysis_id}`);
-    } catch { /* silent */ }
+    } catch (err) { setError(err instanceof Error ? err.message : "Failed to analyze video"); }
   }, [router]);
 
   if (loading) return <WatchSkeleton />;
