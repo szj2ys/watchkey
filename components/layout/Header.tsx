@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
@@ -12,6 +12,9 @@ export function Header() {
   const [user, setUser] = useState<User | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -23,6 +26,37 @@ export function Header() {
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) && 
+          triggerRef.current && !triggerRef.current.contains(event.target as Node)) {
+        setProfileDropdownOpen(false);
+      }
+    };
+    
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && profileDropdownOpen) {
+        setProfileDropdownOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [profileDropdownOpen]);
+
+  // Trap focus roughly: when it opens, focus the first item (Sign Out)
+  useEffect(() => {
+    if (profileDropdownOpen) {
+      const firstFocusable = dropdownRef.current?.querySelector('button') as HTMLButtonElement | null;
+      firstFocusable?.focus();
+    }
+  }, [profileDropdownOpen]);
 
   const handleSearch = (e: React.FormEvent): void => {
     e.preventDefault();
@@ -36,6 +70,7 @@ export function Header() {
     const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
+    setProfileDropdownOpen(false);
     router.push('/');
     router.refresh();
   };
@@ -81,26 +116,41 @@ export function Header() {
 
         <div className="flex items-center gap-1 lg:gap-2 flex-shrink-0">
           {user ? (
-            <div className="relative group">
-              <button className="w-8 h-8 rounded-full overflow-hidden bg-[#272727] flex items-center justify-center flex-shrink-0">
+            <div className="relative">
+              <button 
+                ref={triggerRef}
+                aria-label="User Profile"
+                aria-haspopup="true"
+                aria-expanded={profileDropdownOpen}
+                onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                className="w-8 h-8 rounded-full overflow-hidden bg-[#272727] flex items-center justify-center flex-shrink-0"
+              >
                 {user.user_metadata?.avatar_url ? (
-                  <img src={user.user_metadata.avatar_url} alt="" className="w-full h-full object-cover" />
+                  <img src={user.user_metadata.avatar_url} alt="User Avatar" className="w-full h-full object-cover" />
                 ) : (
                   <UserIcon className="w-4 h-4 text-gray-400" />
                 )}
               </button>
-              <div className="absolute right-0 top-full mt-2 w-56 bg-[#1a1a1a] border border-[#272727] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                <div className="p-3 border-b border-[#272727]">
-                  <p className="text-sm font-medium text-white truncate">{user.user_metadata?.name || user.email}</p>
-                  <p className="text-xs text-gray-500 truncate">{user.email}</p>
+              
+              {profileDropdownOpen && (
+                <div 
+                  ref={dropdownRef}
+                  className="absolute right-0 top-full mt-2 w-56 bg-[#1a1a1a] border border-[#272727] rounded-xl shadow-xl transition-all z-50"
+                >
+                  <div className="p-3 border-b border-[#272727]">
+                    <p className="text-sm font-medium text-white truncate">{user.user_metadata?.name || user.email}</p>
+                    <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                  </div>
+                  <div className="py-1">
+                    <button 
+                      onClick={handleSignOut}
+                      className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:bg-[#272727] transition-colors w-full text-left"
+                    >
+                      <LogOut className="w-4 h-4" /> Sign Out
+                    </button>
+                  </div>
                 </div>
-                <div className="py-1">
-                  <button onClick={handleSignOut}
-                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:bg-[#272727] transition-colors w-full text-left">
-                    <LogOut className="w-4 h-4" /> Sign Out
-                  </button>
-                </div>
-              </div>
+              )}
             </div>
           ) : (
             <button onClick={handleSignIn}
