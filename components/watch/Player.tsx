@@ -73,7 +73,7 @@ export function Player({ videoId, onTimeUpdate, onPlayerReady }: PlayerProps) {
 
   return (
     <div className="rounded-2xl overflow-hidden bg-black aspect-video" ref={containerRef}>
-      <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
+      <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
         <Loader2 className="w-6 h-6 animate-spin" />
       </div>
     </div>

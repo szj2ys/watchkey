@@ -47,7 +47,7 @@ export function TranscriptPanel({
         <button onClick={onToggle}
           className="flex items-center gap-2 font-medium text-sm hover:text-gray-300 transition-colors">
           <Clock className="w-4 h-4 text-blue-400" /> Transcript
-          {showTranscript ? <ChevronUp className="w-4 h-4 text-gray-500" /> : <ChevronDown className="w-4 h-4 text-gray-500" />}
+          {showTranscript ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
         </button>
         {transcript.length > 0 && (
           <button onClick={exportTranscript}
@@ -63,13 +63,13 @@ export function TranscriptPanel({
               className={`w-full flex gap-3 p-2.5 rounded-lg text-left transition-all ${
                 i === activeTranscriptIdx ? 'bg-blue-500/15 text-white' : 'hover:bg-[#222] text-gray-400'
               }`}>
-              <span className={`text-xs font-mono flex-shrink-0 pt-0.5 w-12 ${i === activeTranscriptIdx ? 'text-blue-400' : 'text-gray-600'}`}>
+              <span className={`text-xs font-mono flex-shrink-0 pt-0.5 w-12 ${i === activeTranscriptIdx ? 'text-blue-400' : 'text-gray-400'}`}>
                 {formatTime(entry.startTime)}
               </span>
               <p className="text-sm leading-relaxed">{entry.text}</p>
             </button>
           )) : (
-            <p className="text-sm text-gray-600 italic text-center py-8">No transcript available</p>
+            <p className="text-sm text-gray-400 italic text-center py-8">No transcript available</p>
           )}
         </div>
       )}

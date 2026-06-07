@@ -27,7 +27,7 @@ export function ChapterPanel({ chapters, activeChapterIdx, onSeek }: Props) {
                 ? 'bg-blue-500/15 border-l-2 border-blue-500'
                 : 'hover:bg-[#222] border-l-2 border-transparent'
             }`}>
-            <span className="text-xs font-mono text-gray-500 flex-shrink-0 w-12">{formatTime(ch.startTime)}</span>
+            <span className="text-xs font-mono text-gray-400 flex-shrink-0 w-12">{formatTime(ch.startTime)}</span>
             <span className={`text-sm ${i === activeChapterIdx ? 'text-blue-400 font-medium' : 'text-gray-300'}`}>{ch.title}</span>
             {i === activeChapterIdx && <Play className="w-3 h-3 text-blue-400 ml-auto flex-shrink-0" />}
           </button>

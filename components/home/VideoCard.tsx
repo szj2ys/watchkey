@@ -19,7 +19,7 @@ export function VideoCard({ video }: Props) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <Play className="w-10 h-10 text-gray-600" />
+            <Play className="w-10 h-10 text-gray-400" />
           </div>
         )}
         <span className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded">
@@ -29,8 +29,8 @@ export function VideoCard({ video }: Props) {
       <h3 className="text-sm font-medium line-clamp-2 group-hover:text-blue-400 transition-colors leading-snug">
         {video.title}
       </h3>
-      <p className="text-xs text-gray-500 mt-1">{video.channel}</p>
-      <p className="text-xs text-gray-600">
+      <p className="text-xs text-gray-400 mt-1">{video.channel}</p>
+      <p className="text-xs text-gray-400">
         {video.viewCount} views &middot; {video.publishedAt}
       </p>
     </button>

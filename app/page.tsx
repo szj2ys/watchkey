@@ -130,11 +130,11 @@ export default async function Home(): Promise<React.ReactElement> {
               </svg>
               <span className="text-sm font-bold text-white">WatchKey</span>
             </div>
-            <nav className="flex items-center gap-6 text-sm text-gray-500">
+            <nav className="flex items-center gap-6 text-sm text-gray-400">
               <a href="/privacy" className="hover:text-white transition-colors">Privacy</a>
               <a href="/terms" className="hover:text-white transition-colors">Terms</a>
             </nav>
-            <span className="text-xs text-gray-600">&copy; 2026 WatchKey</span>
+            <span className="text-xs text-gray-400">&copy; 2026 WatchKey</span>
           </div>
         </div>
       </footer>

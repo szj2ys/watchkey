@@ -23,7 +23,7 @@ export function Features() {
   return (
     <section className="w-full max-w-6xl mx-auto px-4 py-16 lg:py-24" data-testid="features-section">
       <h2 className="text-2xl lg:text-3xl font-bold text-center mb-4">Everything you need</h2>
-      <p className="text-gray-500 text-center mb-12 max-w-lg mx-auto">
+      <p className="text-gray-400 text-center mb-12 max-w-lg mx-auto">
         Powerful AI tools to understand any YouTube video faster.
       </p>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -37,7 +37,7 @@ export function Features() {
               {feature.icon}
             </div>
             <h3 className="text-lg font-bold mb-2 text-white">{feature.title}</h3>
-            <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
+            <p className="text-gray-400 text-sm leading-relaxed">{feature.description}</p>
           </div>
         ))}
       </div>

@@ -14,7 +14,7 @@ export function RecommendationsPanel({ recommendations, onAnalyze }: Props) {
   if (recommendations.length === 0) {
     return (
       <div className="bg-[#1a1a1a] rounded-xl p-6 text-center">
-        <p className="text-sm text-gray-500">Recommendations will appear here</p>
+        <p className="text-sm text-gray-400">Recommendations will appear here</p>
       </div>
     );
   }
@@ -30,14 +30,14 @@ export function RecommendationsPanel({ recommendations, onAnalyze }: Props) {
               {v.thumbnail ? (
                 <img src={v.thumbnail} alt={v.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center"><Play className="w-6 h-6 text-gray-600" /></div>
+                <div className="w-full h-full flex items-center justify-center"><Play className="w-6 h-6 text-gray-400" /></div>
               )}
               <span className="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] px-1 py-0.5 rounded">{formatDuration(v.duration)}</span>
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="text-sm font-medium line-clamp-2 group-hover:text-blue-400 transition-colors leading-snug">{v.title}</h3>
-              <p className="text-xs text-gray-500 mt-0.5">{v.channel}</p>
-              <p className="text-xs text-gray-600">{v.viewCount} views</p>
+              <p className="text-xs text-gray-400 mt-0.5">{v.channel}</p>
+              <p className="text-xs text-gray-400">{v.viewCount} views</p>
             </div>
           </button>
         ))}

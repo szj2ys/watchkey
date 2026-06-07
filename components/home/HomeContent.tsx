@@ -62,7 +62,7 @@ function SearchResults({ query, onClear }: SearchResultsProps) {
           <SearchIcon className="w-5 h-5 text-gray-400" />
           <h2 className="text-lg font-bold">Results for "{query}"</h2>
         </div>
-        <button onClick={onClear} className="text-sm text-gray-500 hover:text-white transition-colors px-3 py-1 rounded-full bg-[#272727] hover:bg-[#3a3a3a]">
+        <button onClick={onClear} className="text-sm text-gray-400 hover:text-white transition-colors px-3 py-1 rounded-full bg-[#272727] hover:bg-[#3a3a3a]">
           Clear
         </button>
       </div>
@@ -77,7 +77,7 @@ function SearchResults({ query, onClear }: SearchResultsProps) {
         </div>
       ) : !error ? (
         <div className="text-center py-16">
-          <p className="text-gray-500">No results found for "{query}"</p>
+          <p className="text-gray-400">No results found for "{query}"</p>
         </div>
       ) : null}
     </section>

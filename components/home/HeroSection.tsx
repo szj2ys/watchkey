@@ -131,12 +131,12 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
           </div>
         )}
 
-        <p className="text-xs text-gray-600 mt-4">Analysis takes ~2 minutes · No sign-up required</p>
+        <p className="text-xs text-gray-400 mt-4">Analysis takes ~2 minutes · No sign-up required</p>
 
         {/* Google login CTA (only when not logged in) */}
         {!loggedIn && (
           <div className="mt-10 pt-8 border-t border-[#272727]">
-            <p className="text-sm text-gray-500 mb-4">Connect your YouTube account to see personalized recommendations</p>
+            <p className="text-sm text-gray-400 mb-4">Connect your YouTube account to see personalized recommendations</p>
             <button onClick={handleGoogleAuth} disabled={authLoading}
               className="inline-flex items-center gap-3 px-6 py-3 bg-white text-black rounded-full font-medium hover:bg-gray-100 transition-colors disabled:opacity-50 text-sm">
               {authLoading ? (

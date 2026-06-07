@@ -152,12 +152,12 @@ export default function WatchPage(): React.ReactElement {
       {/* Top bar */}
       <header className="sticky top-0 z-50 bg-[#0f0f0f]/95 backdrop-blur border-b border-[#272727]">
         <div className="max-w-[1800px] mx-auto flex items-center gap-3 px-4 h-14">
-          <Link href="/" className="p-2 hover:bg-[#272727] rounded-full transition-colors flex-shrink-0">
+          <Link href="/" aria-label="Go back" className="p-3 hover:bg-[#272727] rounded-full transition-colors flex-shrink-0">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium truncate">{video.title}</p>
-            <p className="text-xs text-gray-500 truncate">{video.channel}</p>
+            <p className="text-xs text-gray-400 truncate">{video.channel}</p>
           </div>
         </div>
       </header>
@@ -192,7 +192,7 @@ export default function WatchPage(): React.ReactElement {
                  analysis.status.charAt(0).toUpperCase() + analysis.status.slice(1)}
               </span>
               {(analysis.status === 'processing' || analysis.status === 'pending') && (
-                <div className="flex items-center gap-2 text-xs text-gray-500">
+                <div className="flex items-center gap-2 text-xs text-gray-400">
                   <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
                   Up to 2 minutes
                 </div>
@@ -212,7 +212,7 @@ export default function WatchPage(): React.ReactElement {
                   <div className="flex items-center gap-2 font-medium text-sm">
                     <FileText className="w-4 h-4 text-blue-400" /> AI Summary
                   </div>
-                  {showSummary ? <ChevronUp className="w-4 h-4 text-gray-500" /> : <ChevronDown className="w-4 h-4 text-gray-500" />}
+                  {showSummary ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
                 </button>
                 {showSummary && (
                   <div className="px-4 pb-4 text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">{analysis.summary}</div>

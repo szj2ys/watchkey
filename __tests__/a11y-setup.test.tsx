@@ -5,7 +5,7 @@ import { axe } from 'jest-axe';
 const BadComponent = () => (
   <main>
     <img src="test.jpg" /> {/* Missing alt */}
-    <button className="text-gray-500 bg-black">Click me</button> {/* Poor contrast */}
+    <button className="text-gray-400 bg-black">Click me</button> {/* Poor contrast */}
   </main>
 );
 

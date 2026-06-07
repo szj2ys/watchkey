@@ -139,7 +139,7 @@ export function Header() {
                 >
                   <div className="p-3 border-b border-[#272727]">
                     <p className="text-sm font-medium text-white truncate">{user.user_metadata?.name || user.email}</p>
-                    <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                    <p className="text-xs text-gray-400 truncate">{user.email}</p>
                   </div>
                   <div className="py-1">
                     <button 
@@ -170,7 +170,7 @@ export function Header() {
               <div className="flex items-center bg-[#121212] rounded-full border border-[#303030] px-3">
                 <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
                   placeholder="Search" className="flex-1 h-9 bg-transparent text-white placeholder-gray-500 text-sm outline-none" />
-                <Search className="w-4 h-4 text-gray-500" />
+                <Search className="w-4 h-4 text-gray-400" />
               </div>
             </form>
             <nav className="flex-1 py-2">
