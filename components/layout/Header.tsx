@@ -50,7 +50,6 @@ export function Header() {
     };
   }, [profileDropdownOpen]);
 
-  // Trap focus roughly: when it opens, focus the first item (Sign Out)
   useEffect(() => {
     if (profileDropdownOpen) {
       const firstFocusable = dropdownRef.current?.querySelector('button') as HTMLButtonElement | null;
@@ -88,17 +87,17 @@ export function Header() {
 
   return (
     <>
-      <header className="flex items-center justify-between px-3 lg:px-4 py-2 bg-[#0f0f0f] sticky top-0 z-50 h-14 border-b border-[#272727]">
+      <header className="flex items-center justify-between px-3 lg:px-4 py-2 bg-black sticky top-0 z-50 h-14 border-b border-[rgba(255,255,255,0.06)]">
         <div className="flex items-center gap-2 lg:gap-4 flex-shrink-0">
           <button aria-label="Menu" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 hover:bg-[#272727] rounded-full transition-colors">
+            className="p-2 hover:bg-[rgba(255,255,255,0.06)] rounded-full transition-colors">
             <Menu className="w-5 h-5 text-white" />
           </button>
           <Link href="/" className="flex items-center gap-1">
-            <svg className="w-7 h-7 text-[#3b82f6]" fill="none" viewBox="0 0 24 24">
+            <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24">
               <path d="M4 6L8 18L12 6L16 18L20 6" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
             </svg>
-            <span className="text-lg font-bold tracking-tight text-white hidden sm:block">WatchKey</span>
+            <span className="text-lg font-bold tracking-tight text-white hidden sm:block font-heading">WatchKey</span>
           </Link>
         </div>
 
@@ -106,10 +105,10 @@ export function Header() {
           <div className="flex w-full">
             <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search YouTube videos"
-              className="w-full h-10 px-4 py-2 bg-[#121212] border border-[#303030] rounded-l-full text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none text-sm" />
+              className="w-full h-10 px-4 py-2 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] rounded-l-full text-white placeholder-[#666] focus:border-[rgba(255,255,255,0.2)] focus:outline-none text-sm transition-colors" />
             <button type="submit" aria-label="Search"
-              className="px-5 bg-[#222] border border-l-0 border-[#303030] rounded-r-full hover:bg-[#303030] transition-colors">
-              <Search className="w-5 h-5 text-gray-400" />
+              className="px-5 bg-[rgba(255,255,255,0.04)] border border-l-0 border-[rgba(255,255,255,0.08)] rounded-r-full hover:bg-[rgba(255,255,255,0.08)] transition-colors">
+              <Search className="w-5 h-5 text-[#666]" />
             </button>
           </div>
         </form>
@@ -123,28 +122,28 @@ export function Header() {
                 aria-haspopup="true"
                 aria-expanded={profileDropdownOpen}
                 onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                className="w-8 h-8 rounded-full overflow-hidden bg-[#272727] flex items-center justify-center flex-shrink-0"
+                className="w-8 h-8 rounded-full overflow-hidden bg-[rgba(255,255,255,0.06)] flex items-center justify-center flex-shrink-0 ring-1 ring-[rgba(255,255,255,0.1)]"
               >
                 {user.user_metadata?.avatar_url ? (
                   <img src={user.user_metadata.avatar_url} alt="User Avatar" className="w-full h-full object-cover" />
                 ) : (
-                  <UserIcon className="w-4 h-4 text-gray-400" />
+                  <UserIcon className="w-4 h-4 text-[#888]" />
                 )}
               </button>
               
               {profileDropdownOpen && (
                 <div 
                   ref={dropdownRef}
-                  className="absolute right-0 top-full mt-2 w-56 bg-[#1a1a1a] border border-[#272727] rounded-xl shadow-xl transition-all z-50"
+                  className="absolute right-0 top-full mt-2 w-56 bg-[#0a0a0a] border border-[rgba(255,255,255,0.08)] rounded-xl glass-card transition-all z-50"
                 >
-                  <div className="p-3 border-b border-[#272727]">
+                  <div className="p-3 border-b border-[rgba(255,255,255,0.06)]">
                     <p className="text-sm font-medium text-white truncate">{user.user_metadata?.name || user.email}</p>
-                    <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                    <p className="text-xs text-[#666] truncate">{user.email}</p>
                   </div>
                   <div className="py-1">
                     <button 
                       onClick={handleSignOut}
-                      className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:bg-[#272727] transition-colors w-full text-left"
+                      className="flex items-center gap-3 px-3 py-2 text-sm text-[#aaa] hover:text-white hover:bg-[rgba(255,255,255,0.06)] transition-colors w-full text-left"
                     >
                       <LogOut className="w-4 h-4" /> Sign Out
                     </button>
@@ -154,7 +153,7 @@ export function Header() {
             </div>
           ) : (
             <button onClick={handleSignIn}
-              className="flex items-center gap-1.5 px-3 py-1.5 border border-[#303030] text-blue-400 rounded-full text-sm hover:bg-blue-500/10 hover:border-blue-500/30 transition-colors">
+              className="flex items-center gap-1.5 px-4 py-1.5 bg-white text-black rounded-full text-sm font-medium hover:bg-[#e2e2e2] transition-colors">
               <LogIn className="w-4 h-4" />
               <span className="hidden sm:inline">Sign in</span>
             </button>
@@ -164,18 +163,18 @@ export function Header() {
 
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setMobileMenuOpen(false)} />
-          <div className="absolute left-0 top-0 bottom-0 w-64 bg-[#0f0f0f] border-r border-[#272727] flex flex-col">
-            <form onSubmit={handleSearch} className="p-3 border-b border-[#272727]">
-              <div className="flex items-center bg-[#121212] rounded-full border border-[#303030] px-3">
+          <div className="absolute inset-0 bg-black/70" onClick={() => setMobileMenuOpen(false)} />
+          <div className="absolute left-0 top-0 bottom-0 w-64 bg-black border-r border-[rgba(255,255,255,0.06)] flex flex-col">
+            <form onSubmit={handleSearch} className="p-3 border-b border-[rgba(255,255,255,0.06)]">
+              <div className="flex items-center bg-[rgba(255,255,255,0.04)] rounded-full border border-[rgba(255,255,255,0.08)] px-3">
                 <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-                  placeholder="Search" className="flex-1 h-9 bg-transparent text-white placeholder-gray-500 text-sm outline-none" />
-                <Search className="w-4 h-4 text-gray-400" />
+                  placeholder="Search" className="flex-1 h-9 bg-transparent text-white placeholder-[#666] text-sm outline-none" />
+                <Search className="w-4 h-4 text-[#666]" />
               </div>
             </form>
             <nav className="flex-1 py-2">
               <Link href="/" onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-4 px-4 py-3 text-sm text-white hover:bg-[#272727]">
+                className="flex items-center gap-4 px-4 py-3 text-sm text-white hover:bg-[rgba(255,255,255,0.06)]">
                 <Menu className="w-5 h-5" /> Home
               </Link>
             </nav>

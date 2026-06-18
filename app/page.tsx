@@ -111,26 +111,26 @@ export default async function Home(): Promise<React.ReactElement> {
   const loggedIn = !!data;
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0f0f0f] text-white">
+    <div className="flex flex-col min-h-screen bg-black text-white">
       <Header />
       <main className="flex-grow">
         <HomeContent loggedIn={loggedIn} data={data} trending={trending} />
       </main>
 
-      <footer className="border-t border-[#272727] py-8">
+      <footer className="border-t border-[rgba(255,255,255,0.04)] py-8">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-1">
-              <svg className="w-5 h-5 text-[#3b82f6]" fill="none" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24">
                 <path d="M4 6L8 18L12 6L16 18L20 6" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
               </svg>
               <span className="text-sm font-bold text-white">WatchKey</span>
             </div>
-            <nav className="flex items-center gap-6 text-sm text-gray-400">
-              <a href="/privacy" className="hover:text-white transition-colors">Privacy</a>
-              <a href="/terms" className="hover:text-white transition-colors">Terms</a>
+            <nav className="flex items-center gap-6 text-sm text-[#555]">
+              <a href="/privacy" className="hover:text-[#999] transition-colors">Privacy</a>
+              <a href="/terms" className="hover:text-[#999] transition-colors">Terms</a>
             </nav>
-            <span className="text-xs text-gray-400">&copy; 2026 WatchKey</span>
+            <span className="text-xs text-[#444]">&copy; 2026 WatchKey</span>
           </div>
         </div>
       </footer>

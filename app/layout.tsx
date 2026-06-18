@@ -1,22 +1,16 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
 
-const geistSans = localFont({
-  src: [
-    { path: "../public/fonts/geist-latin.woff2", weight: "100 900", style: "normal" },
-    { path: "../public/fonts/geist-latin-ext.woff2", weight: "100 900", style: "normal" },
-  ],
-  variable: "--font-geist-sans",
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-plus-jakarta-sans",
   display: "swap",
 });
 
-const geistMono = localFont({
-  src: [
-    { path: "../public/fonts/geist-mono-latin.woff2", weight: "100 900", style: "normal" },
-    { path: "../public/fonts/geist-mono-latin-ext.woff2", weight: "100 900", style: "normal" },
-  ],
-  variable: "--font-geist-mono",
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -33,9 +27,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${plusJakartaSans.variable} ${inter.variable} h-full antialiased dark`}
+      style={{ colorScheme: 'dark' }}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col bg-black text-[#e2e2e2] font-sans selection:bg-white/10 selection:text-white">
+        {children}
+      </body>
     </html>
   );
 }

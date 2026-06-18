@@ -41,15 +41,15 @@ function SearchResults({ query, onClear }: SearchResultsProps) {
     return (
       <section className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex items-center gap-3 mb-6">
-          <Loader2 className="w-5 h-5 animate-spin text-blue-400" />
-          <span className="text-sm text-gray-400">Searching for "{query}"...</span>
+          <Loader2 className="w-5 h-5 animate-spin text-[#555]" />
+          <span className="text-sm text-[#555]">Searching for &quot;{query}&quot;...</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {[1,2,3,4,5,6,7,8].map(i => (
             <div key={i} className="space-y-2">
-              <div className="aspect-video bg-[#1a1a1a] rounded-xl animate-pulse" />
-              <div className="h-4 bg-[#1a1a1a] rounded w-3/4 animate-pulse" />
-              <div className="h-3 bg-[#1a1a1a] rounded w-1/2 animate-pulse" />
+              <div className="aspect-video bg-white/[0.04] rounded-lg animate-pulse" />
+              <div className="h-4 bg-white/[0.04] rounded w-3/4 animate-pulse" />
+              <div className="h-3 bg-white/[0.04] rounded w-1/2 animate-pulse" />
             </div>
           ))}
         </div>
@@ -61,10 +61,10 @@ function SearchResults({ query, onClear }: SearchResultsProps) {
     <section className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <SearchIcon className="w-5 h-5 text-gray-400" />
-          <h2 className="text-lg font-bold">Results for "{query}"</h2>
+          <SearchIcon className="w-5 h-5 text-[#555]" />
+          <h2 className="text-lg font-bold font-heading text-white">Results for &quot;{query}&quot;</h2>
         </div>
-        <button onClick={onClear} className="text-sm text-gray-400 hover:text-white transition-colors px-3 py-1 rounded-full bg-[#272727] hover:bg-[#3a3a3a]">
+        <button onClick={onClear} className="text-sm text-[#555] hover:text-white transition-colors px-3 py-1 rounded-full bg-white/[0.04] border border-[rgba(255,255,255,0.06)] hover:bg-white/[0.08]">
           Clear
         </button>
       </div>
@@ -79,7 +79,7 @@ function SearchResults({ query, onClear }: SearchResultsProps) {
         </div>
       ) : !error ? (
         <div className="text-center py-16">
-          <p className="text-gray-400">No results found for &quot;{query}&quot;</p>
+          <p className="text-[#555]">No results found for &quot;{query}&quot;</p>
         </div>
       ) : null}
     </section>
@@ -95,7 +95,7 @@ function TrendingVideos({ videos }: TrendingVideosProps) {
 
   return (
     <section className="max-w-6xl mx-auto px-4 py-8 lg:py-12">
-      <h2 className="text-lg font-bold mb-4">Trending</h2>
+      <h2 className="text-lg font-bold mb-4 font-heading text-white">Trending</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {videos.map(v => <VideoCard key={v.id} video={v} />)}
       </div>
@@ -118,7 +118,6 @@ function InnerHomeContent({
   const q = searchParams.get('q') || '';
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Sync state when URL param changes
   const currentQuery = searchQuery || q;
 
   if (currentQuery) {

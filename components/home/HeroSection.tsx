@@ -71,26 +71,24 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
   return (
     <section className="flex flex-col items-center justify-center px-4 pt-16 pb-12 lg:pt-24 lg:pb-16">
       <div className="text-center max-w-4xl w-full">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-xs font-medium mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-full text-[#888] text-xs font-medium mb-8">
           <Sparkles className="w-3.5 h-3.5" />
-          AI-powered YouTube analysis
+          AI-powered analysis
         </div>
 
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] mb-4">
+        <h1 className="text-5xl md:text-6xl lg:text-[72px] font-extrabold font-heading tracking-[-0.04em] leading-[0.95] mb-6 text-white">
           Understand any video
           <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">
-            in minutes
-          </span>
+          <span className="text-[#888]">in minutes</span>
         </h1>
 
-        <p className="text-lg md:text-xl text-gray-400 font-normal mb-10 max-w-2xl mx-auto">
+        <p className="text-lg md:text-xl text-[#666] font-normal mb-12 max-w-2xl mx-auto leading-relaxed">
           AI-generated chapters, summaries, and transcripts.
           <br className="hidden sm:block" />
           Paste a YouTube URL and get instant insights.
         </p>
 
-        {/* URL Input */}
+        {/* URL Input - Luxe bottom-border style */}
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row w-full max-w-2xl mx-auto gap-3">
           <div className="relative flex-grow">
             <input
@@ -100,22 +98,22 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
               onChange={e => { setUrl(e.target.value); if (error) setError(''); if (submitSuccess) setSubmitSuccess(false); }}
               onPaste={handlePaste}
               disabled={isSubmitting}
-              className={`w-full h-14 px-6 text-base bg-[#121212] border rounded-full text-white placeholder-gray-500 focus:outline-none transition-all ${
-                error ? 'border-red-500' : submitSuccess ? 'border-green-500' : 'border-[#303030] focus:border-blue-500'
+              className={`w-full h-14 px-6 text-base bg-transparent border border-[rgba(255,255,255,0.1)] rounded-full text-white placeholder-[#555] focus:outline-none focus:border-[rgba(255,255,255,0.25)] transition-all ${
+                error ? 'border-red-500/60' : submitSuccess ? 'border-green-500/60' : ''
               } ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
             />
             {isSubmitting && (
               <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+                <Loader2 className="w-5 h-5 animate-spin text-[#555]" />
               </div>
             )}
           </div>
           <button type="submit" disabled={!url || isSubmitting}
-            className="h-14 px-8 bg-blue-500 hover:bg-blue-600 text-white text-base font-semibold rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center min-w-[140px] flex-shrink-0">
+            className="h-14 px-8 bg-white text-black text-base font-semibold rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-transparent hover:text-white hover:border hover:border-white flex items-center justify-center min-w-[140px] flex-shrink-0 uppercase tracking-tight">
             {isSubmitting ? (
-              <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Analyzing…</span>
+              <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Analyzing</span>
             ) : submitSuccess ? (
-              <span className="flex items-center gap-2"><Check className="w-5 h-5" /> Done!</span>
+              <span className="flex items-center gap-2"><Check className="w-5 h-5" /> Done</span>
             ) : 'Analyze'}
           </button>
         </form>
@@ -127,18 +125,18 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
         )}
         {submitSuccess && (
           <div className="flex items-center justify-center gap-2 mt-3 text-green-400 text-sm">
-            <Check className="w-4 h-4 flex-shrink-0" /> Analysis started! Redirecting…
+            <Check className="w-4 h-4 flex-shrink-0" /> Analysis started
           </div>
         )}
 
-        <p className="text-xs text-gray-400 mt-4">Analysis takes ~2 minutes · No sign-up required</p>
+        <p className="text-xs text-[#444] mt-4">Analysis takes ~2 minutes &middot; No sign-up required</p>
 
-        {/* Google login CTA (only when not logged in) */}
+        {/* Google login CTA */}
         {!loggedIn && (
-          <div className="mt-10 pt-8 border-t border-[#272727]">
-            <p className="text-sm text-gray-400 mb-4">Connect your YouTube account to see personalized recommendations</p>
+          <div className="mt-12 pt-8 border-t border-[rgba(255,255,255,0.04)]">
+            <p className="text-sm text-[#555] mb-4">Connect your YouTube account to see personalized recommendations</p>
             <button onClick={handleGoogleAuth} disabled={authLoading}
-              className="inline-flex items-center gap-3 px-6 py-3 bg-white text-black rounded-full font-medium hover:bg-gray-100 transition-colors disabled:opacity-50 text-sm">
+              className="inline-flex items-center gap-3 px-6 py-3 bg-white/[0.06] border border-[rgba(255,255,255,0.08)] text-white rounded-full font-medium hover:bg-white/[0.1] transition-colors disabled:opacity-50 text-sm">
               {authLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
