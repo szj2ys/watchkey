@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { parseDuration, formatViewCount, formatRelativeDate as formatDate, VideoItem } from '@/lib/youtube/utils';
-import { setupProxy } from '@/lib/proxy';
+import { proxyFetch } from '@/lib/proxy';
 
 const YOUTUBE_SEARCH_API = 'https://www.googleapis.com/youtube/v3/search';
 const YOUTUBE_VIDEOS_API = 'https://www.googleapis.com/youtube/v3/videos';
@@ -32,10 +32,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'YouTube API key not configured' }, { status: 503 });
   }
 
-  await setupProxy();
-
   try {
-    const searchRes = await fetch(
+    const searchRes = await proxyFetch(
       `${YOUTUBE_SEARCH_API}?part=snippet&q=${encodeURIComponent(q)}&type=video&maxResults=20&key=${apiKey}`
     );
     
@@ -53,7 +51,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ items: [] });
     }
 
-    const detailsRes = await fetch(
+    const detailsRes = await proxyFetch(
       `${YOUTUBE_VIDEOS_API}?part=contentDetails,statistics&id=${videoIds.join(',')}&key=${apiKey}`
     );
     

@@ -1,4 +1,6 @@
-import { setupProxy } from '@/lib/proxy';
+import { proxyFetch } from '@/lib/proxy';
+import { parseDuration } from '@/lib/youtube/utils';
+import { fetchWithProxy } from '@/lib/fetch';
 
 export interface YouTubeVideoDetails {
   youtubeId: string;
@@ -34,8 +36,7 @@ export async function getYouTubeVideoDetails(
 
   if (apiKey) {
     try {
-      await setupProxy();
-      const response = await fetch(
+      const response = await proxyFetch(
         `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${apiKey}`
       );
 
@@ -53,7 +54,7 @@ export async function getYouTubeVideoDetails(
       const snippet = item.snippet;
       const contentDetails = item.contentDetails;
 
-      const duration = parseISO8601Duration(contentDetails.duration);
+      const duration = parseDuration(contentDetails.duration);
 
       return {
         youtubeId: videoId,
@@ -71,9 +72,7 @@ export async function getYouTubeVideoDetails(
   }
 }
 
-function getBasicYouTubeMetadata(
-  videoId: string
-): YouTubeVideoDetails {
+function getBasicYouTubeMetadata(videoId: string): YouTubeVideoDetails {
   return {
     youtubeId: videoId,
     title: `YouTube Video ${videoId}`,
@@ -83,23 +82,13 @@ function getBasicYouTubeMetadata(
   };
 }
 
-function parseISO8601Duration(duration: string): number {
-  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-  if (!match) return 0;
-  const hours = parseInt(match[1] || '0', 10);
-  const minutes = parseInt(match[2] || '0', 10);
-  const seconds = parseInt(match[3] || '0', 10);
-  return hours * 3600 + minutes * 60 + seconds;
-}
 
 export async function fetchYouTubeTranscript(
   videoId: string
 ): Promise<TranscriptEntry[]> {
-  await setupProxy();
-
   try {
     const { YoutubeTranscript } = await import('youtube-transcript');
-    const raw: YouTubeTranscriptItem[] = await YoutubeTranscript.fetchTranscript(videoId);
+    const raw: YouTubeTranscriptItem[] = await YoutubeTranscript.fetchTranscript(videoId, { fetch: fetchWithProxy as unknown as typeof fetch });
 
     const entries: TranscriptEntry[] = raw.map((item: YouTubeTranscriptItem) => ({
       text: item.text.replace(/\n/g, ' ').trim(),
