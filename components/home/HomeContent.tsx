@@ -41,8 +41,8 @@ function SearchResults({ query, onClear }: SearchResultsProps) {
     return (
       <section className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex items-center gap-3 mb-6">
-          <Loader2 className="w-5 h-5 animate-spin text-[#555]" />
-          <span className="text-sm text-[#555]">Searching for &quot;{query}&quot;...</span>
+          <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Searching for &quot;{query}&quot;...</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {[1,2,3,4,5,6,7,8].map(i => (
@@ -61,10 +61,10 @@ function SearchResults({ query, onClear }: SearchResultsProps) {
     <section className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <SearchIcon className="w-5 h-5 text-[#555]" />
+          <SearchIcon className="w-5 h-5 text-muted-foreground" />
           <h2 className="text-lg font-bold font-heading text-white">Results for &quot;{query}&quot;</h2>
         </div>
-        <button onClick={onClear} className="text-sm text-[#555] hover:text-white transition-colors px-3 py-1 rounded-full bg-white/[0.04] border border-[rgba(255,255,255,0.06)] hover:bg-white/[0.08]">
+        <button onClick={onClear} className="text-sm text-muted-foreground hover:text-white transition-colors px-3 py-1 rounded-full bg-white/[0.04] border border-[rgba(255,255,255,0.06)] hover:bg-white/[0.08]">
           Clear
         </button>
       </div>
@@ -79,7 +79,7 @@ function SearchResults({ query, onClear }: SearchResultsProps) {
         </div>
       ) : !error ? (
         <div className="text-center py-16">
-          <p className="text-[#555]">No results found for &quot;{query}&quot;</p>
+          <p className="text-muted-foreground">No results found for &quot;{query}&quot;</p>
         </div>
       ) : null}
     </section>

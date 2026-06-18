@@ -15,7 +15,7 @@ export function RecommendationsPanel({ recommendations, onAnalyze }: Props) {
   if (recommendations.length === 0) {
     return (
       <GlassCard className="p-6 text-center">
-        <p className="text-sm text-[#555]">Recommendations will appear here</p>
+        <p className="text-sm text-muted-foreground">Recommendations will appear here</p>
       </GlassCard>
     );
   }
@@ -31,14 +31,14 @@ export function RecommendationsPanel({ recommendations, onAnalyze }: Props) {
               {v.thumbnail ? (
                 <img src={v.thumbnail} alt={v.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center"><Play className="w-6 h-6 text-[#555]" /></div>
+                <div className="w-full h-full flex items-center justify-center"><Play className="w-6 h-6 text-muted-foreground" /></div>
               )}
               <span className="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] px-1 py-0.5 rounded">{formatDuration(v.duration)}</span>
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="text-sm font-medium line-clamp-2 group-hover:text-white transition-colors leading-snug text-[#aaa]">{v.title}</h3>
-              <p className="text-xs text-[#555] mt-0.5">{v.channel}</p>
-              <p className="text-xs text-[#444]">{v.viewCount} views</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{v.channel}</p>
+              <p className="text-xs text-muted-foreground/60">{v.viewCount} views</p>
             </div>
           </button>
         ))}

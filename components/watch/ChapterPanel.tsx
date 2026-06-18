@@ -29,10 +29,10 @@ export function ChapterPanel({ chapters, activeChapterIdx, onSeek }: Props) {
                 : 'hover:bg-white/[0.02] border-l-2 border-transparent'
             }`}>
             <span className={`text-xs font-mono flex-shrink-0 w-12 transition-colors ${
-              i === activeChapterIdx ? 'text-white' : 'text-[#444]'
+              i === activeChapterIdx ? 'text-white' : 'text-muted-foreground/60'
             }`}>{formatTime(ch.startTime)}</span>
             <span className={`text-sm transition-colors flex-grow ${
-              i === activeChapterIdx ? 'text-white font-semibold' : 'text-[#666] group-hover:text-[#aaa]'
+              i === activeChapterIdx ? 'text-white font-semibold' : 'text-muted-foreground hover:text-white transition-colors'
             }`}>{ch.title}</span>
             {i === activeChapterIdx && <Play className="w-3.5 h-3.5 text-white ml-auto flex-shrink-0 animate-pulse" />}
           </button>

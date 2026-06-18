@@ -105,10 +105,10 @@ export function Header() {
           <div className="flex w-full">
             <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search YouTube videos"
-              className="w-full h-10 px-4 py-2 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] rounded-l-full text-white placeholder-[#666] focus:border-[rgba(255,255,255,0.2)] focus:outline-none text-sm transition-colors" />
+              className="w-full h-10 px-4 py-2 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] rounded-l-full text-white placeholder-white/40 focus:border-[rgba(255,255,255,0.2)] focus:outline-none text-sm transition-colors" />
             <button type="submit" aria-label="Search"
               className="px-5 bg-[rgba(255,255,255,0.04)] border border-l-0 border-[rgba(255,255,255,0.08)] rounded-r-full hover:bg-[rgba(255,255,255,0.08)] transition-colors">
-              <Search className="w-5 h-5 text-[#666]" />
+              <Search className="w-5 h-5 text-muted-foreground/60" />
             </button>
           </div>
         </form>
@@ -138,7 +138,7 @@ export function Header() {
                 >
                   <div className="p-3 border-b border-[rgba(255,255,255,0.06)]">
                     <p className="text-sm font-medium text-white truncate">{user.user_metadata?.name || user.email}</p>
-                    <p className="text-xs text-[#666] truncate">{user.email}</p>
+                    <p className="text-xs text-muted-foreground/60 truncate">{user.email}</p>
                   </div>
                   <div className="py-1">
                     <button 
@@ -168,8 +168,8 @@ export function Header() {
             <form onSubmit={handleSearch} className="p-3 border-b border-[rgba(255,255,255,0.06)]">
               <div className="flex items-center bg-[rgba(255,255,255,0.04)] rounded-full border border-[rgba(255,255,255,0.08)] px-3">
                 <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-                  placeholder="Search" className="flex-1 h-9 bg-transparent text-white placeholder-[#666] text-sm outline-none" />
-                <Search className="w-4 h-4 text-[#666]" />
+                  placeholder="Search" className="flex-1 h-9 bg-transparent text-white placeholder-white/40 text-sm outline-none" />
+                <Search className="w-4 h-4 text-muted-foreground/60" />
               </div>
             </form>
             <nav className="flex-1 py-2">

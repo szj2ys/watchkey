@@ -25,10 +25,10 @@ export function YouTubeFeed({ data }: Props) {
                   {sub.thumbnail ? (
                     <img src={sub.thumbnail} alt={sub.title} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[#555] text-xs">?</div>
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">?</div>
                   )}
                 </div>
-                <span className="text-xs text-[#555] text-center w-16 truncate">{sub.title}</span>
+                <span className="text-xs text-muted-foreground text-center w-16 truncate">{sub.title}</span>
               </div>
             ))}
           </div>
@@ -46,7 +46,7 @@ export function YouTubeFeed({ data }: Props) {
 
       {videos.length === 0 && subscriptions.length === 0 && (
         <div className="text-center py-16">
-          <p className="text-[#555]">No YouTube data available. Try signing in again.</p>
+          <p className="text-muted-foreground">No YouTube data available. Try signing in again.</p>
         </div>
       )}
     </section>

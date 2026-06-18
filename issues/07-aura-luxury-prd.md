@@ -259,19 +259,19 @@ $$\text{分析观看完成数} = \text{访问量} \times \text{URL粘贴转化�
 
 ## 可执行 backlog（issue 粒度，含工时估算）
 
-* [ ] **Backlog #1: Config Plus Jakarta Sans & Tailwind CSS variables (Aura Spec)**
+* [x] **Backlog #1: Config Plus Jakarta Sans & Tailwind CSS variables (Aura Spec)**
   * 工时估算：0.5 人天
   * 范围：导入字体资源，在 Tailwind 配置文件中注入 colors.surface-dim, surface-bright 等变量，搭建 css-vars 隔离环境。
-* [ ] **Backlog #2: Migrate Homepage & Core Header/Footer to Aura Style**
+* [x] **Backlog #2: Migrate Homepage & Core Header/Footer to Aura Style**
   * 工时估算：1.0 人天
   * 范围：首页彻底重写，引入 Void 虚无全暗色，重构高档药丸输入条与 `ANALYZE` 白底黑字按钮，Header/Footer 极简降噪。
-* [ ] **Backlog #3: Implement General Glassmorphism Card Component & Watch Page Layout**
+* [x] **Backlog #3: Implement General Glassmorphism Card Component & Watch Page Layout**
   * 工时估算：1.5 人天
   * 范围：封装透明度加模糊的玻璃拟态通用 Card 组件；重组 Watch 结果页面双栏网格。
-* [ ] **Backlog #4: Adapt AI Summary, Transcript, and Chapters panels**
+* [x] **Backlog #4: Adapt AI Summary, Transcript, and Chapters panels**
   * 工时估算：1.0 人天
   * 范围：重构三个面板的配色与高对比选中态；优化 Chapter 同步算法，确保激活状态高对比显示。
-* [ ] **Backlog #5: Integration Testing & Accessibility Audit**
+* [x] **Backlog #5: Integration Testing & Accessibility Audit**
   * 工时估算：0.5 人天
   * 范围：运行 axe 辅助功能自动化审查，确保全站对比度满足 WCAG AA；编写集成测试并全部通过。
 

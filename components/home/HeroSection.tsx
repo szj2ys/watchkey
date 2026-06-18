@@ -82,7 +82,7 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
           <span className="text-[#888]">in minutes</span>
         </h1>
 
-        <p className="text-lg md:text-xl text-[#666] font-normal mb-12 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-lg md:text-xl text-muted-foreground font-normal mb-12 max-w-2xl mx-auto leading-relaxed">
           AI-generated chapters, summaries, and transcripts.
           <br className="hidden sm:block" />
           Paste a YouTube URL and get instant insights.
@@ -98,13 +98,13 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
               onChange={e => { setUrl(e.target.value); if (error) setError(''); if (submitSuccess) setSubmitSuccess(false); }}
               onPaste={handlePaste}
               disabled={isSubmitting}
-              className={`w-full h-14 px-6 text-base bg-transparent border border-[rgba(255,255,255,0.1)] rounded-full text-white placeholder-[#555] focus:outline-none focus:border-[rgba(255,255,255,0.25)] transition-all ${
+              className={`w-full h-14 px-6 text-base bg-transparent border border-[rgba(255,255,255,0.1)] rounded-full text-white placeholder-white/40 focus:outline-none focus:border-[rgba(255,255,255,0.25)] transition-all ${
                 error ? 'border-red-500/60' : submitSuccess ? 'border-green-500/60' : ''
               } ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
             />
             {isSubmitting && (
               <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                <Loader2 className="w-5 h-5 animate-spin text-[#555]" />
+                <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
               </div>
             )}
           </div>
@@ -129,12 +129,12 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
           </div>
         )}
 
-        <p className="text-xs text-[#444] mt-4">Analysis takes ~2 minutes &middot; No sign-up required</p>
+        <p className="text-xs text-muted-foreground/60 mt-4">Analysis takes ~2 minutes &middot; No sign-up required</p>
 
         {/* Google login CTA */}
         {!loggedIn && (
           <div className="mt-12 pt-8 border-t border-[rgba(255,255,255,0.04)]">
-            <p className="text-sm text-[#555] mb-4">Connect your YouTube account to see personalized recommendations</p>
+            <p className="text-sm text-muted-foreground mb-4">Connect your YouTube account to see personalized recommendations</p>
             <button onClick={handleGoogleAuth} disabled={authLoading}
               className="inline-flex items-center gap-3 px-6 py-3 bg-white/[0.06] border border-[rgba(255,255,255,0.08)] text-white rounded-full font-medium hover:bg-white/[0.1] transition-colors disabled:opacity-50 text-sm">
               {authLoading ? (
