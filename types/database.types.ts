@@ -17,6 +17,7 @@ export interface Database {
           channel: string
           duration: number
           thumbnail_url: string
+          user_id: string | null
           created_at: string
         }
         Insert: {
@@ -26,6 +27,7 @@ export interface Database {
           channel: string
           duration: number
           thumbnail_url: string
+          user_id?: string | null
           created_at?: string
         }
         Update: {
@@ -35,6 +37,7 @@ export interface Database {
           channel?: string
           duration?: number
           thumbnail_url?: string
+          user_id?: string | null
           created_at?: string
         }
         Relationships: []
@@ -48,6 +51,7 @@ export interface Database {
           transcript: Json
           status: 'pending' | 'processing' | 'completed' | 'failed'
           error: string | null
+          user_id: string | null
           created_at: string
         }
         Insert: {
@@ -58,6 +62,7 @@ export interface Database {
           transcript?: Json
           status?: 'pending' | 'processing' | 'completed' | 'failed'
           error?: string | null
+          user_id?: string | null
           created_at?: string
         }
         Update: {
@@ -68,6 +73,7 @@ export interface Database {
           transcript?: Json
           status?: 'pending' | 'processing' | 'completed' | 'failed'
           error?: string | null
+          user_id?: string | null
           created_at?: string
         }
         Relationships: [
@@ -79,6 +85,42 @@ export interface Database {
             referencedColumns: ["id"]
           }
         ]
+      }
+      user_profiles: {
+        Row: {
+          id: string
+          email: string | null
+          name: string | null
+          avatar_url: string | null
+          youtube_refresh_token: string | null
+          analysis_count: number
+          analysis_limit: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          email?: string | null
+          name?: string | null
+          avatar_url?: string | null
+          youtube_refresh_token?: string | null
+          analysis_count?: number
+          analysis_limit?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string | null
+          name?: string | null
+          avatar_url?: string | null
+          youtube_refresh_token?: string | null
+          analysis_count?: number
+          analysis_limit?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
     }
     Views: {
