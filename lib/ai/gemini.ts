@@ -1,5 +1,5 @@
 import { AIProvider, Chapter, TranscriptEntry } from './provider'
-import { setupProxy } from '@/lib/proxy'
+import { proxyFetch } from '@/lib/proxy'
 
 const GEMINI_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
 const MAX_TRANSCRIPT_LENGTH = 8000
@@ -33,13 +33,12 @@ export class GeminiProvider implements AIProvider {
   }
 
   private async callGemini(prompt: string): Promise<string> {
-    await setupProxy()
     const url = `${GEMINI_ENDPOINT}?key=${this.apiKey}`
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), 25000)
 
     try {
-      const response = await fetch(url, {
+      const response = await proxyFetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

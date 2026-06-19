@@ -17,8 +17,10 @@ export function Player({ videoId, onTimeUpdate, onPlayerReady }: PlayerProps) {
   const onTimeUpdateRef = useRef(onTimeUpdate);
   const onPlayerReadyRef = useRef(onPlayerReady);
 
-  onTimeUpdateRef.current = onTimeUpdate;
-  onPlayerReadyRef.current = onPlayerReady;
+  useEffect(() => {
+    onTimeUpdateRef.current = onTimeUpdate;
+    onPlayerReadyRef.current = onPlayerReady;
+  });
 
   useEffect(() => {
     if (!videoId || !containerRef.current) return;
@@ -48,7 +50,7 @@ export function Player({ videoId, onTimeUpdate, onPlayerReady }: PlayerProps) {
                 const t = player.getCurrentTime();
                 if (typeof t === 'number') onTimeUpdateRef.current(t);
               } catch { /* player not ready */ }
-            }, 500);
+            }, 250); // High precision: 250ms interval for perfect mapping
           },
         },
       });
@@ -72,8 +74,8 @@ export function Player({ videoId, onTimeUpdate, onPlayerReady }: PlayerProps) {
   }, [videoId]);
 
   return (
-    <div className="rounded-2xl overflow-hidden bg-black aspect-video" ref={containerRef}>
-      <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
+    <div className="rounded border border-[rgba(255,255,255,0.08)] overflow-hidden bg-black aspect-video" ref={containerRef}>
+      <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
         <Loader2 className="w-6 h-6 animate-spin" />
       </div>
     </div>

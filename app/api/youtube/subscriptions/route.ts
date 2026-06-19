@@ -37,19 +37,28 @@ async function fetchRecentVideos(channelId: string | undefined, accessToken: str
     `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=10&order=date&type=video`,
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
-  if (!searchRes.ok) return [];
+  
+  if (!searchRes.ok) {
+    return [];
+  }
 
   const searchData = await searchRes.json();
   const videoIds: string[] = (searchData.items as YouTubeSearchItem[] || [])
     .map((i) => i.id.videoId)
     .filter(Boolean);
-  if (videoIds.length === 0) return [];
+    
+  if (videoIds.length === 0) {
+    return [];
+  }
 
   const vidsRes = await fetch(
     `${YOUTUBE_VIDEOS_API}?part=contentDetails,statistics,snippet&id=${videoIds.slice(0, 5).join(',')}`,
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
-  if (!vidsRes.ok) return [];
+  
+  if (!vidsRes.ok) {
+    return [];
+  }
 
   const vidsData = await vidsRes.json();
   return (vidsData.items as YouTubeVideoResponse[] || []).map((item) => ({
@@ -81,7 +90,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       `${YOUTUBE_SUBS_API}?part=snippet&mine=true&maxResults=25&order=alphabetical`,
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
-    if (!subsRes.ok) throw new Error(`Subscriptions fetch failed: ${subsRes.status}`);
+    
+    if (!subsRes.ok) {
+      throw new Error(`Subscriptions fetch failed: ${subsRes.status}`);
+    }
+    
     const subsData = await subsRes.json();
 
     const subscriptions = (subsData.items as YouTubeSubItem[] || []).map((item) => ({
