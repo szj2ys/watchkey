@@ -5,6 +5,7 @@ import { getYouTubeVideoDetails, fetchYouTubeTranscript } from '@/lib/youtube/se
 import { AIService } from '@/lib/ai/service'
 import { randomUUID } from 'crypto'
 import type { Chapter } from '@/lib/ai/provider'
+import { PROGRESS_PCT } from '@/lib/progress'
 
 interface TranscriptEntry {
   text: string;
@@ -33,10 +34,12 @@ async function processAnalysisInBackground(analysisId: string, videoId: string, 
   const supabase = createSupabase(supabaseUrl, supabaseAnonKey)
 
   try {
-    await supabase.from('analyses').update({ status: 'processing' }).eq('id', analysisId)
+    await supabase.from('analyses').update({ status: 'processing', progress_stage: 'transcript', progress_pct: PROGRESS_PCT.transcript }).eq('id', analysisId)
 
     const transcriptEntries = await fetchYouTubeTranscript(videoId) || []
     const plainText = transcriptEntries.map((e) => e.text).join(' ')
+
+    await supabase.from('analyses').update({ progress_stage: 'chapters', progress_pct: PROGRESS_PCT.chapters }).eq('id', analysisId)
 
     let chapters: Chapter[] = []
     let summary: string | null = null
@@ -51,6 +54,8 @@ async function processAnalysisInBackground(analysisId: string, videoId: string, 
         summary: String(ch.summary || ''),
       }))
 
+      await supabase.from('analyses').update({ progress_stage: 'summary', progress_pct: PROGRESS_PCT.summary }).eq('id', analysisId)
+
       summary = await aiService.generateSummary(plainText)
     }
 
@@ -63,6 +68,8 @@ async function processAnalysisInBackground(analysisId: string, videoId: string, 
 
     await supabase.from('analyses').update({
       status: 'completed',
+      progress_stage: 'completed',
+      progress_pct: PROGRESS_PCT.completed,
       chapters,
       summary,
       transcript: enhancedTranscript,
