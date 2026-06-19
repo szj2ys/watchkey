@@ -17,6 +17,8 @@ export async function GET(
         id,
         status,
         error,
+        progress_stage,
+        progress_pct,
         chapters,
         summary,
         transcript,

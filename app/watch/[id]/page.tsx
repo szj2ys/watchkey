@@ -13,6 +13,7 @@ import { RecommendationsPanel } from '@/components/watch/RecommendationsPanel';
 import { SearchPanel } from '@/components/watch/SearchPanel';
 import { parseChapters, parseTranscript, findActiveChapter } from '@/components/watch/utils';
 import type { AnalysisData, VideoData, SearchResult, YTPlayer, Chapter, TranscriptEntry } from '@/components/watch/types';
+import { AnalysisProgress } from '@/components/AnalysisProgress';
 
 /* ─── Skeleton ─── */
 function WatchSkeleton(): React.ReactElement {
@@ -192,10 +193,16 @@ export default function WatchPage(): React.ReactElement {
                  analysis.status.charAt(0).toUpperCase() + analysis.status.slice(1)}
               </span>
               {(analysis.status === 'processing' || analysis.status === 'pending') && (
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
-                  Up to 2 minutes
-                </div>
+                <>
+                  {analysis.progress_stage !== null && analysis.progress_pct !== null ? (
+                    <AnalysisProgress progress_stage={analysis.progress_stage} progress_pct={analysis.progress_pct} />
+                  ) : (
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
+                      Up to 2 minutes
+                    </div>
+                  )}
+                </>
               )}
               {analysis.error && <p className="text-xs text-red-400">{analysis.error}</p>}
             </div>

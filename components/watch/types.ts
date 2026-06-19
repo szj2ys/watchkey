@@ -26,6 +26,8 @@ export interface AnalysisData {
   id: string;
   status: 'pending' | 'processing' | 'completed' | 'failed';
   error: string | null;
+  progress_stage: string | null;
+  progress_pct: number | null;
   chapters: Chapter[] | string[];
   summary: string | null;
   transcript: TranscriptEntry[] | string;
