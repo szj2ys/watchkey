@@ -40,6 +40,7 @@ function createChainableMock() {
   mock.eq = jest.fn().mockReturnValue(mock);
   mock.single = jest.fn();
   mock.from = jest.fn().mockReturnValue(mock);
+  mock.auth = { getUser: jest.fn().mockResolvedValue({ data: { user: null }, error: null }) };
   return mock;
 }
 

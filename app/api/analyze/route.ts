@@ -92,6 +92,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const supabase = await createClient()
 
+    // Get authenticated user (if any)
+    const { data: { user } } = await supabase.auth.getUser()
+    const userId = user?.id || null
+
     const { data: existingVideo } = await supabase
       .from('videos')
       .select('id, duration, analyses(id, status)')
@@ -125,6 +129,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           channel: videoDetails.channel,
           duration: videoDetails.duration,
           thumbnail_url: videoDetails.thumbnailUrl,
+          user_id: userId,
         })
         .select('id')
         .single()
@@ -136,7 +141,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const { data: analysisData, error: analysisError } = await supabase
       .from('analyses')
-      .insert({ video_id: video_uuid, status: 'pending' })
+      .insert({ video_id: video_uuid, status: 'pending', user_id: userId })
       .select('id')
       .single()
 
