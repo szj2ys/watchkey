@@ -32,6 +32,7 @@ describe('HeroSection - Form Submission', () => {
   beforeEach(() => {
     mockPush.mockClear();
     mockFetch.mockReset();
+    localStorage.clear();
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ analysis_id: 'test-id' }),

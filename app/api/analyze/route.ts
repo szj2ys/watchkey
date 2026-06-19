@@ -117,7 +117,49 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       if (existingAnalysis) {
         return NextResponse.json({ analysis_id: existingAnalysis.id, status: existingAnalysis.status, requestId }, { status: 200 })
       }
-    } else {
+    }
+
+    // Rate Limiting Enforcement for Authenticated Users
+    if (userId) {
+      const { data: profile, error: profileError } = await supabase
+        .from('user_profiles')
+        .select('analysis_count, analysis_limit, updated_at')
+        .eq('id', userId)
+        .single()
+
+      if (profileError) throw profileError
+
+      let count = profile.analysis_count
+      const limit = profile.analysis_limit
+
+      const profileDateStr = new Date(profile.updated_at).toISOString().split('T')[0]
+      const currentDateStr = new Date().toISOString().split('T')[0]
+
+      if (profileDateStr !== currentDateStr) {
+        // Daily UTC Reset
+        count = 0
+      }
+
+      if (count >= limit) {
+        return NextResponse.json(
+          { error: 'Daily limit reached. Please upgrade to continue.', requestId },
+          { status: 429 }
+        )
+      }
+
+      // Increment analysis count
+      const { error: updateError } = await supabase
+        .from('user_profiles')
+        .update({
+          analysis_count: count + 1,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', userId)
+
+      if (updateError) throw updateError
+    }
+
+    if (!existingVideo) {
       const videoDetails = await getYouTubeVideoDetails(videoId)
       video_duration = videoDetails.duration || 300
 
@@ -137,6 +179,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       if (insertError) throw insertError
       if (!videoData) throw new Error('Failed to create video record')
       video_uuid = videoData.id
+    } else {
+      const video = existingVideo as unknown as ExistingVideo;
+      video_uuid = video.id
     }
 
     const { data: analysisData, error: analysisError } = await supabase
