@@ -32,7 +32,8 @@ describe('HeroSection - URL Input', () => {
     const analyzeButton = screen.getByRole('button', { name: /analyze/i });
     expect(analyzeButton).toBeInTheDocument();
 
-    // Hint text
-    expect(screen.getByText(/Analysis takes ~2 minutes/)).toBeInTheDocument();
+    // Hero heading and description
+    expect(screen.getByText(/Understand any video/)).toBeInTheDocument();
+    expect(screen.getByText(/AI-generated chapters, summaries, and transcripts/)).toBeInTheDocument();
   });
 });

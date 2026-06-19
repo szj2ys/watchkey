@@ -1,9 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Loader2, Check, AlertCircle, LogIn, Sparkles } from 'lucide-react';
+import { Loader2, Check, AlertCircle, Sparkles } from 'lucide-react';
+
+interface UsageData {
+  loggedIn: boolean;
+  count: number;
+  limit: number;
+}
 
 export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
   const router = useRouter();
@@ -12,10 +18,37 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
+  const [usage, setUsage] = useState<UsageData | null>(null);
+  const [showToast, setShowToast] = useState(false);
 
   const supabase = createClient();
 
   const validateUrl = (u: string) => /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/.test(u);
+
+  const fetchUsage = async () => {
+    if (loggedIn) {
+      try {
+        const res = await fetch('/api/usage');
+        if (res.ok) {
+          const data = await res.json();
+          setUsage(data);
+        }
+      } catch (err) {
+        console.error('Error fetching usage:', err);
+      }
+    } else {
+      const guestCount = localStorage.getItem('watchkey_guest_count') || '0';
+      setUsage({
+        loggedIn: false,
+        count: parseInt(guestCount, 10),
+        limit: 1,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchUsage();
+  }, [loggedIn]);
 
   const submitAnalysis = async (youtubeUrl: string) => {
     setError('');
@@ -33,6 +66,17 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
       }
       const data = await res.json();
       setSubmitSuccess(true);
+      
+      // Update guest usage if anonymous
+      if (!loggedIn) {
+        localStorage.setItem('watchkey_guest_count', '1');
+        window.dispatchEvent(new Event('watchkey_guest_analysis_done'));
+        fetchUsage();
+        setShowToast(true);
+      } else {
+        fetchUsage();
+      }
+
       setTimeout(() => router.push(`/watch/${data.analysis_id}`), 400);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Something went wrong';
@@ -68,6 +112,8 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
     }
   };
 
+  const limitReached = !!(usage && usage.count >= usage.limit);
+
   return (
     <section className="flex flex-col items-center justify-center px-4 pt-16 pb-12 lg:pt-24 lg:pb-16">
       <div className="text-center max-w-4xl w-full">
@@ -97,10 +143,10 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
               value={url}
               onChange={e => { setUrl(e.target.value); if (error) setError(''); if (submitSuccess) setSubmitSuccess(false); }}
               onPaste={handlePaste}
-              disabled={isSubmitting}
+              disabled={isSubmitting || limitReached}
               className={`w-full h-14 px-6 text-base bg-transparent border border-[rgba(255,255,255,0.1)] rounded-full text-white placeholder-white/40 focus:outline-none focus:border-[rgba(255,255,255,0.25)] transition-all ${
                 error ? 'border-red-500/60' : submitSuccess ? 'border-green-500/60' : ''
-              } ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+              } ${isSubmitting || limitReached ? 'opacity-70 cursor-not-allowed' : ''}`}
             />
             {isSubmitting && (
               <div className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -108,7 +154,7 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
               </div>
             )}
           </div>
-          <button type="submit" disabled={!url || isSubmitting}
+          <button type="submit" disabled={!url || isSubmitting || limitReached}
             className="h-14 px-8 bg-white text-black text-base font-semibold rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-transparent hover:text-white hover:border hover:border-white flex items-center justify-center min-w-[140px] flex-shrink-0 uppercase tracking-tight">
             {isSubmitting ? (
               <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Analyzing</span>
@@ -129,10 +175,29 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
           </div>
         )}
 
-        <p className="text-xs text-muted-foreground/60 mt-4">Analysis takes ~2 minutes &middot; No sign-up required</p>
+        {/* Dynamic Usage Tracking / Limits display */}
+        <div className="mt-4 flex flex-col items-center gap-1.5">
+          {usage && (
+            <p className="text-xs text-muted-foreground/60">
+              {usage.loggedIn ? `${usage.count}/${usage.limit} analyses used today` : `${usage.count}/${usage.limit} free analyses used`}
+            </p>
+          )}
+          {limitReached && (
+            <div className="flex flex-col items-center gap-2 mt-1">
+              <p className="text-sm text-red-400 font-semibold flex items-center gap-1.5">
+                <AlertCircle className="w-4 h-4" /> Daily limit reached
+              </p>
+              {loggedIn ? (
+                <p className="text-xs text-muted-foreground/80">Please upgrade your plan to perform more analyses.</p>
+              ) : (
+                <p className="text-xs text-muted-foreground/80">Create a free account to reset your limits and analyze more videos.</p>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Google login CTA */}
-        {!loggedIn && (
+        {!loggedIn && !limitReached && (
           <div className="mt-12 pt-8 border-t border-[rgba(255,255,255,0.04)]">
             <p className="text-sm text-muted-foreground mb-4">Connect your YouTube account to see personalized recommendations</p>
             <button onClick={handleGoogleAuth} disabled={authLoading}
@@ -152,6 +217,37 @@ export function HeroSection({ loggedIn }: { loggedIn: boolean }) {
           </div>
         )}
       </div>
+
+      {/* Floating Glassmorphic Toast for Guest Post-Analysis Sign-Up Prompt */}
+      {showToast && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-md animate-in slide-in-from-bottom-5 duration-300">
+          <div className="glass-card rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.04)] backdrop-blur-md p-5 shadow-2xl flex flex-col gap-3">
+            <div className="flex items-start gap-3">
+              <Sparkles className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+              <div className="text-left">
+                <h4 className="text-sm font-semibold text-white">Save your analysis — create a free account</h4>
+                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                  Create a free account to track your analysis history, unlock personalized recommendations, and reset your daily limits!
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-2 mt-1">
+              <button
+                onClick={() => setShowToast(false)}
+                className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-white transition-colors"
+              >
+                Dismiss
+              </button>
+              <button
+                onClick={handleGoogleAuth}
+                className="px-4 py-1.5 bg-white text-black rounded-full text-xs font-semibold hover:bg-white/90 transition-all uppercase tracking-tight"
+              >
+                Sign Up Free
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

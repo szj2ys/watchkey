@@ -88,6 +88,7 @@ describe('Issue #12 — Analysis Ownership (user_id stamping)', () => {
 
     mock.single
       .mockResolvedValueOnce({ data: null, error: null }) // video check
+      .mockResolvedValueOnce({ data: { analysis_count: 0, analysis_limit: 3, updated_at: new Date().toISOString() }, error: null }) // user_profiles rate limit check
       .mockResolvedValueOnce({ data: { id: 'video-uuid-1' }, error: null }) // insert video
       .mockResolvedValueOnce({ data: { id: 'analysis-uuid-1' }, error: null }); // insert analysis
 
@@ -117,9 +118,10 @@ describe('Issue #12 — Analysis Ownership (user_id stamping)', () => {
     (createClient as jest.Mock).mockResolvedValue(mock);
 
     mock.single
-      .mockResolvedValueOnce({ data: null, error: null })
-      .mockResolvedValueOnce({ data: { id: 'video-uuid-1' }, error: null })
-      .mockResolvedValueOnce({ data: { id: 'analysis-uuid-1' }, error: null });
+      .mockResolvedValueOnce({ data: null, error: null }) // video check
+      .mockResolvedValueOnce({ data: { analysis_count: 0, analysis_limit: 3, updated_at: new Date().toISOString() }, error: null }) // user_profiles rate limit check
+      .mockResolvedValueOnce({ data: { id: 'video-uuid-1' }, error: null }) // insert video
+      .mockResolvedValueOnce({ data: { id: 'analysis-uuid-1' }, error: null }); // insert analysis
 
     (getYouTubeVideoDetails as jest.Mock).mockResolvedValue({
       title: 'Test Video', channel: 'Test Channel', duration: 300, thumbnailUrl: 'https://example.com/thumb.jpg',
@@ -175,9 +177,10 @@ describe('Issue #12 — Analysis Ownership (user_id stamping)', () => {
     (createClient as jest.Mock).mockResolvedValue(mock);
 
     mock.single
-      .mockResolvedValueOnce({ data: null, error: null })
-      .mockResolvedValueOnce({ data: { id: 'video-uuid-1' }, error: null })
-      .mockResolvedValueOnce({ data: { id: 'analysis-uuid-1' }, error: null });
+      .mockResolvedValueOnce({ data: null, error: null }) // video check
+      .mockResolvedValueOnce({ data: { analysis_count: 0, analysis_limit: 3, updated_at: new Date().toISOString() }, error: null }) // user_profiles rate limit check
+      .mockResolvedValueOnce({ data: { id: 'video-uuid-1' }, error: null }) // insert video
+      .mockResolvedValueOnce({ data: { id: 'analysis-uuid-1' }, error: null }); // insert analysis
 
     (getYouTubeVideoDetails as jest.Mock).mockResolvedValue({
       title: 'Test Video', channel: 'Test Channel', duration: 300, thumbnailUrl: 'https://example.com/thumb.jpg',
